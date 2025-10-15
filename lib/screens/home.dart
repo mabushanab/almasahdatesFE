@@ -2,49 +2,6 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'screens/login_page.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MyAppState(),
-      child: MaterialApp(
-        title: 'Namer App',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
-        ),
-        home: LoginPage(),
-      ),
-    );
-  }
-}
-
-class MyAppState extends ChangeNotifier {
-  var current = WordPair.random();
-  void getnext() {
-    current = WordPair.random();
-    notifyListeners();
-  }
-
-  var fav = <WordPair>[];
-  void togglefavs() {
-    if (fav.contains(current)) {
-      fav.remove(current);
-    } else {
-      fav.add(current);
-    }
-    print(fav);
-    notifyListeners();
-  }
-}
-
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -106,5 +63,24 @@ class BigCard extends StatelessWidget {
         child: Text(pair.asLowerCase, style: style),
       ),
     );
+  }
+}
+
+class MyAppState extends ChangeNotifier {
+  var current = WordPair.random();
+  void getnext() {
+    current = WordPair.random();
+    notifyListeners();
+  }
+
+  var fav = <WordPair>[];
+  void togglefavs() {
+    if (fav.contains(current)) {
+      fav.remove(current);
+    } else {
+      fav.add(current);
+    }
+    print(fav);
+    notifyListeners();
   }
 }
