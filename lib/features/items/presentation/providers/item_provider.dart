@@ -23,7 +23,7 @@ class ItemProvider extends ChangeNotifier {
     notifyListeners();
 
     await _repo.addItem(item);
-    await _repo.getItems();
+    loadItems();
 
     isLoading = false;
     notifyListeners();
@@ -34,7 +34,8 @@ class ItemProvider extends ChangeNotifier {
     notifyListeners();
 
     await _repo.deleteItem(item.name);
-    await _repo.getItems();
+    // await _repo.getItems();
+    loadItems();
 
     isLoading = false;
     notifyListeners();

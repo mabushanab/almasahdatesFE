@@ -1,47 +1,50 @@
-// screens/item_list_screen.dart
-import 'package:almasah_dates/features/items/data/models/item.dart';
-import 'package:almasah_dates/features/items/presentation/providers/item_provider.dart';
+// screens/merchant_list_screen.dart
+import 'package:almasah_dates/features/marchent/data/models/merchent.dart';
+import 'package:almasah_dates/features/marchent/presentation/providers/merchant_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ItemListScreen extends StatefulWidget {
-  const ItemListScreen({super.key});
+class MerchantListScreen extends StatefulWidget {
+  const MerchantListScreen({super.key});
 
   @override
-  State<ItemListScreen> createState() => _ItemListScreenState();
+  State<MerchantListScreen> createState() => _MerchantListScreenState();
 }
 
-class _ItemListScreenState extends State<ItemListScreen> {
-  final _itemName = TextEditingController();
-  final _itemType = TextEditingController();
-  final _itemSubType = TextEditingController();
-  final _itemdescr = TextEditingController();
+class _MerchantListScreenState extends State<MerchantListScreen> {
+  final _merchantName = TextEditingController();
+  final _merchantType = TextEditingController();
+  final _merchantAddress = TextEditingController();
+  final _merchantMobileNumber = TextEditingController();
+  final _merchantNotes = TextEditingController();
+  // final _merchantRate = TextEditingController();
+
   @override
   void initState() {
     super.initState();
 
-    // ✅ Load items once when the screen opens
-    Future.microtask(() => context.read<ItemProvider>().loadItems());
+    // ✅ Load merchants once when the screen opens
+    Future.microtask(() => context.read<MerchantProvider>().loadMerchants());
   }
 
-  // List items =;
+  // List merchants =;
   Future<void> _refresh() async {
-    await context.read<ItemProvider>().loadItems();
+    await context.read<MerchantProvider>().loadMerchants();
   }
 
-  Future<void> _addItem(Item item) async {
-    await context.read<ItemProvider>().addItem(item);
+  Future<void> _addMerchant(Merchant merchant) async {
+    await context.read<MerchantProvider>().addMerchant(merchant);
   }
 
-  Future<void> _delete(Item item) async {
-    await context.read<ItemProvider>().deleteItem(item);
+  Future<void> _delete(Merchant merchant) async {
+    await context.read<MerchantProvider>().deleteMerchant(merchant);
   }
 
-  Future<dynamic> _addItemDialog(BuildContext context) {
+  Future<dynamic> _addMerchantDialog(BuildContext context) {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Add item'),
+        title: const Text('Add merchant'),
         content: ConstrainedBox(
           constraints: const BoxConstraints(
             maxHeight: 400, // prevent infinite height
@@ -51,20 +54,24 @@ class _ItemListScreenState extends State<ItemListScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
-                  controller: _itemName,
+                  controller: _merchantName,
                   decoration: const InputDecoration(labelText: 'Name'),
                 ),
                 TextField(
-                  controller: _itemType,
+                  controller: _merchantType,
                   decoration: const InputDecoration(labelText: 'Type'),
                 ),
                 TextField(
-                  controller: _itemSubType,
-                  decoration: const InputDecoration(labelText: 'SubType'),
+                  controller: _merchantMobileNumber,
+                  decoration: const InputDecoration(labelText: 'Mobile Number'),
                 ),
                 TextField(
-                  controller: _itemdescr,
-                  decoration: const InputDecoration(labelText: 'Description'),
+                  controller: _merchantAddress,
+                  decoration: const InputDecoration(labelText: 'Address'),
+                ),
+                                TextField(
+                  controller: _merchantNotes,
+                  decoration: const InputDecoration(labelText: 'Notes'),
                 ),
               ],
             ),
@@ -74,7 +81,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
         actions: [
           ElevatedButton(
             onPressed: () {
-              _addItem(Item(name: _itemName.text, type: _itemType.text));
+              _addMerchant(Merchant(name: _merchantName.text, type: _merchantType.text,address: _merchantAddress.text, mobileNumber: _merchantMobileNumber.text,notes: _merchantNotes.text));
               Navigator.pop(context); // close popup
             },
             child: const Text('Add'),
@@ -88,11 +95,11 @@ class _ItemListScreenState extends State<ItemListScreen> {
     );
   }
 
-  Future<dynamic> _showItemDialog(Item item) {
+  Future<dynamic> _showMerchantDialog(Merchant merchant) {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Show item'),
+        title: const Text('Show merchant'),
         content: ConstrainedBox(
           constraints: const BoxConstraints(
             maxHeight: 400, // prevent infinite height
@@ -101,8 +108,12 @@ class _ItemListScreenState extends State<ItemListScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Name: ' + item.name),
-                Text('Type: ' + item.type),
+                Text('Name: ${merchant.name}'),
+                Text('Type: ${merchant.type}'),
+                Text('Mobile: ${merchant.mobileNumber}'),
+                Text('Addr: ${merchant.address}'),
+                Text('Notes: ${merchant.notes}'),
+                Text('Rate: ${merchant.rate}'),
                 ],
             ),
           ),
@@ -120,19 +131,19 @@ class _ItemListScreenState extends State<ItemListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<ItemProvider>();
+    final provider = context.watch<MerchantProvider>();
 
     return Scaffold(
       appBar: AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Items', style: TextStyle()),
+            const Text('Merchants', style: TextStyle()),
             Spacer(),
             IconButton(onPressed: _refresh, icon: Icon(Icons.refresh)),
             IconButton(
               onPressed: () {
-                _addItemDialog(context);
+                _addMerchantDialog(context);
               },
               icon: Icon(Icons.add),
             ),
@@ -141,13 +152,13 @@ class _ItemListScreenState extends State<ItemListScreen> {
       ),
       body: ListView.builder(
         padding: EdgeInsets.zero,
-        itemCount: provider.items.length,
+        itemCount: provider.merchants.length,
         itemBuilder: (_, i) => TextButton(
-          onPressed: () => _showItemDialog(provider.items[i]),
+          onPressed: () => _showMerchantDialog(provider.merchants[i]),
 
           // context);
           // onPressed: () {
-          // _showItemDialog(provider.items[i],
+          // _showMerchantDialog(provider.merchants[i],
           // },
           child: Card(
             elevation: 3,
@@ -158,10 +169,10 @@ class _ItemListScreenState extends State<ItemListScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(provider.items[i].name),
+                Text(provider.merchants[i].name),
                 const Spacer(),
                 IconButton(
-                  onPressed: () => _delete(provider.items[i]),
+                  onPressed: () => _delete(provider.merchants[i]),
                   icon: Icon(Icons.delete),
                 ),
               ],

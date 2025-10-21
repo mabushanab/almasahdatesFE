@@ -1,7 +1,6 @@
-import 'package:almasah_dates/features/home/presentation/screens/home_page.dart';
-import 'package:almasah_dates/features/auth/presentation/screens/login_page.dart';
-import 'package:almasah_dates/features/auth/presentation/screens/registration_page.dart';
 import 'package:almasah_dates/features/items/presentation/providers/item_provider.dart';
+import 'package:almasah_dates/features/marchent/presentation/providers/merchant_provider.dart';
+import 'package:almasah_dates/routes/routes.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +36,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => MyAppState()),
         ChangeNotifierProvider(create: (_) => ItemProvider()), // ✅ add this
+        ChangeNotifierProvider(create: (_) => MerchantProvider()), // ✅ add this
       ],
       child: MaterialApp(
         title: 'Namer App',
@@ -44,11 +44,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         ),
         initialRoute: '/login',
-        routes: {
-          '/login': (context) => const LoginPage(),
-          '/registration': (context) => const RegistrationPage(),
-          '/home': (context) => MyHomePage(),
-        },
+        routes: AppRoutes.routes,
       ),
     );
   }

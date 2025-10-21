@@ -2,8 +2,8 @@ import 'package:almasah_dates/features/auth/data/services/auth_service.dart';
 import 'package:almasah_dates/features/home/presentation/screens/favs.dart';
 import 'package:almasah_dates/features/home/presentation/screens/generator_page.dart';
 import 'package:almasah_dates/features/items/presentation/screens/item_list_screen.dart';
+import 'package:almasah_dates/features/marchent/presentation/screens/merchant_list_screen.dart';
 import 'package:flutter/material.dart';
-
 
 // ...
 
@@ -33,10 +33,18 @@ class _MyHomePageState extends State<MyHomePage> {
         page = favs();
         print('1');
         break;
-              case 2:
+      case 2:
         page = ItemListScreen();
         print('2');
         break;
+      case 3:
+        page = MerchantListScreen();
+        print('3');
+        break;
+      case 4:
+        page = ItemListScreen();
+        print('4');
+        break;        
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
@@ -55,9 +63,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   icon: Icon(Icons.favorite),
                   label: Text('Favorites'),
                 ),
-                                NavigationRailDestination(
+                NavigationRailDestination(
                   icon: Icon(Icons.category),
                   label: Text('items'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.people),
+                  label: Text('Customers'),
+                  
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.person_pin),
+                  label: Text('Marchents'),
                 ),
               ],
               selectedIndex: selectedIndex,
@@ -66,7 +83,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   selectedIndex = value;
                 });
               },
-            trailing: IconButton(onPressed: _logout,icon: Icon(Icons.logout),),
+              trailing: IconButton(
+                onPressed: _logout,
+                icon: Icon(Icons.logout),
+              ),
             ),
           ),
           Expanded(
