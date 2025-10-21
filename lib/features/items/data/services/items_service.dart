@@ -37,6 +37,20 @@ class ItemService {
     return jsonDecode(response.body);
   }
 
+  Future<void> deleteItem(String name) async {
+    final url = Uri.parse('$baseUrl/item/$name');
+    String? token = await _authService.getToken();
+    final response = await http.delete(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    print(response.body);
+    // return jsonDecode(response.body);
+  }
+
   Future<List<Item>> fetchItems() async {
     String? token = await _authService.getToken();
     final url = Uri.parse('$baseUrl/item/list');
@@ -55,8 +69,24 @@ class ItemService {
       throw Exception('Failed to load items');
     }
   }
-}
 
+  Future<void> addItem(Item item) async {
+    final url = Uri.parse('$baseUrl/item/create');
+    String? token = await _authService.getToken();
+    print(jsonEncode({'name': item.name, 'type': item.type}));
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'name': item.name, 'type': item.type})
+    );
+    print(response.body);
+    // return jsonDecode(response.body);
+  }
+}
+م
 //   Future<bool> login(String username, String password) async {
 //     final url = Uri.parse('$baseUrl/auth/login');
 //     final response = await http.post(

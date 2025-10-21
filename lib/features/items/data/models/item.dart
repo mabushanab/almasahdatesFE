@@ -8,7 +8,7 @@ class Item {
   factory Item.fromJson(Map<String, dynamic> json) => Item(
         name: json['name'],
         // price: (json['price'] as num).toDouble(),
-        type: json['name'],
+        type: json['type'],
         // type: json['name'],
 
       );

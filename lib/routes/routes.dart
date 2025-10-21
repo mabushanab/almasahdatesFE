@@ -6,6 +6,6 @@ class AppRoutes {
   static const itemDetails = '/items/details';
 
   static Map<String, WidgetBuilder> routes = {
-    itemList: (context) => const ItemListScreen(),
+    itemList: (context) => ItemListScreen(),
   };
 }

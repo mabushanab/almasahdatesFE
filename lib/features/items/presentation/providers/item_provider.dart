@@ -17,4 +17,26 @@ class ItemProvider extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
+  Future<void> addItem(Item item) async {
+    isLoading = true;
+    notifyListeners();
+
+    await _repo.addItem(item);
+    await _repo.getItems();
+
+    isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> deleteItem(Item item) async {
+    isLoading = true;
+    notifyListeners();
+
+    await _repo.deleteItem(item.name);
+    await _repo.getItems();
+
+    isLoading = false;
+    notifyListeners();
+  }
 }

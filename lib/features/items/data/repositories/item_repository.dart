@@ -11,4 +11,16 @@ class ItemRepository {
     // or handle errors/retries here
     return await _service.fetchItems();
   }
+
+  Future<void> addItem(Item item) async {
+
+    return await _service.addItem(item);
+  }
+
+
+  Future<void> deleteItem(String name) async {
+    return await _service.deleteItem(name);
+
+  }
+
 }
