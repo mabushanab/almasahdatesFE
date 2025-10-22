@@ -3,6 +3,7 @@ import 'package:almasah_dates/features/auth/presentation/screens/registration_pa
 import 'package:almasah_dates/features/home/presentation/screens/home_page.dart';
 import 'package:almasah_dates/features/items/presentation/screens/item_list_screen.dart';
 import 'package:almasah_dates/features/marchent/presentation/screens/merchant_list_screen.dart';
+import 'package:almasah_dates/features/purchaseOrder/presentation/screens/purchaseOrder_screen.dart';
 import 'package:flutter/material.dart';
 
 class AppRoutes {
@@ -13,6 +14,7 @@ class AppRoutes {
   static const Registration = '/registration';
   static const MyHome = '/home';
   static const merchantList = '/merchants';
+  static const purchaseOrderList = '/purchaseOrder';
 
   static Map<String, WidgetBuilder> routes = {
     Login: (context) => const LoginPage(),
@@ -20,5 +22,6 @@ class AppRoutes {
     MyHome: (context) => MyHomePage(),
     itemList: (context) => ItemListScreen(),
     merchantList: (context) => MerchantListScreen(),
+    purchaseOrderList: (context) => PurchaseOrderListScreen(),
   };
 }
