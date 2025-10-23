@@ -37,9 +37,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => MyAppState()),
-        ChangeNotifierProvider(create: (_) => ItemProvider()), // ✅ add this
-        ChangeNotifierProvider(create: (_) => MerchantProvider()), // ✅ add this
-        ChangeNotifierProvider(create: (_) => PurchaseOrderProvider()), // ✅ add this
+        ChangeNotifierProvider(create: (_) => ItemProvider()),
+        ChangeNotifierProvider(create: (_) => MerchantProvider()),
+        ChangeNotifierProvider(create: (_) => PurchaseOrderProvider()),
       ],
       child: MaterialApp(
         title: 'Namer App',

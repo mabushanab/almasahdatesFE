@@ -3,8 +3,8 @@ import 'package:almasah_dates/features/goods/data/models/goods.dart';
 
 class PurchaseOrder {
   final String merchantName;
-  final List<Goods> goods;
-  final String date;
+  List<Goods> goods;
+  final String? date;
   final double totalPrice;
   final double remainAmount;
   String? notes;
@@ -12,7 +12,7 @@ class PurchaseOrder {
   PurchaseOrder({
     required this.merchantName,
     required this.goods,
-    required this.date,
+    this.date,
     required this.totalPrice,
     required this.remainAmount,
     this.notes,
@@ -20,11 +20,21 @@ class PurchaseOrder {
 
   factory PurchaseOrder.fromJson(Map<String, dynamic> json) => PurchaseOrder(
     merchantName: json['merchantName'],
-    goods: (json['goods'] as List<dynamic>).map((g) => Goods.fromJson(g as Map<String, dynamic>)).toList() ,
+    goods: (json['goods'] as List<dynamic>).map((g) => Goods.fromJson(g)).toList() ,
     date: json['date'],
     totalPrice: json['totalPrice'],
     remainAmount: json['remainAmount'],
     notes: json['notes'],
 
   );
+   Map<String, dynamic> toJson() => {
+        'merchantName': merchantName,
+        'goods': goods.map((g) => g.toJson()).toList(),
+        'date': date,
+        'totalPrice': totalPrice,
+        'remainAmount': remainAmount,
+        'notes': notes,
+
+      };
+
 }

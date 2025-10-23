@@ -8,7 +8,6 @@ import 'package:http/http.dart' as http;
 class PurchaseOrderService {
   final _authService = AuthService();
 
-
   Future<void> deletePurchaseOrder(String name) async {
     final url = Uri.parse('$baseUrl/purchaseOrder/$name');
     String? token = await _authService.getToken();
@@ -42,25 +41,22 @@ class PurchaseOrderService {
       throw Exception('Failed to load purchaseOrders');
     }
   }
+
+  Future<void> addPurchaseOrder(PurchaseOrder purchaseOrder) async {
+    final url = Uri.parse('$baseUrl/purchaseOrder/create');
+    String? token = await _authService.getToken();
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(purchaseOrder.toJson()),
+    );
+    print(response.body);
+    // return jsonDecode(response.body);
+  }
 }
-//   Future<void> addPurchaseOrder(PurchaseOrder purchaseOrder) async {
-//     final url = Uri.parse('$baseUrl/purchaseOrder/create');
-//     String? token = await _authService.getToken();
-//     print(jsonEncode({'name': purchaseOrder.name, 'type': purchaseOrder.type}));
-//     final response = await http.post(
-//       url,
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Authorization': 'Bearer $token',
-//       },
-//       body: jsonEncode({'name': purchaseOrder.name, 'type': purchaseOrder.type, 'mobileNumber': purchaseOrder.mobileNumber, 'address': purchaseOrder.address, 'rate': purchaseOrder.rate,
-//       'notes': purchaseOrder.notes
-//       })
-//     );
-//     print(response.body);
-//     // return jsonDecode(response.body);
-//   }
-// }
 
 
 

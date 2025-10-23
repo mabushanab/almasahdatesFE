@@ -1,3 +1,6 @@
+import 'package:almasah_dates/features/goods/data/models/goods.dart';
+import 'package:almasah_dates/features/marchent/data/models/merchent.dart';
+import 'package:almasah_dates/features/marchent/presentation/providers/merchant_provider.dart';
 import 'package:almasah_dates/features/purchaseOrder/data/models/purchaseOrder.dart';
 import 'package:almasah_dates/features/purchaseOrder/presentation/providers/purchaseOrder_provider.dart';
 import 'package:flutter/material.dart';
@@ -7,21 +10,23 @@ class PurchaseOrderListScreen extends StatefulWidget {
   const PurchaseOrderListScreen({super.key});
 
   @override
-  State<PurchaseOrderListScreen> createState() => _PurchaseOrderListScreenState();
+  State<PurchaseOrderListScreen> createState() =>
+      _PurchaseOrderListScreenState();
 }
 
 class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
-  final _merchantName = TextEditingController();
-  final _purchaseOrderType = TextEditingController();
-  final _purchaseOrderAddress = TextEditingController();
-  final _purchaseOrderMobileNumber = TextEditingController();
-  final _purchaseOrderNotes = TextEditingController();
+  final _totalPrice = TextEditingController();
+  final _remainAmount = TextEditingController();
+  Merchant? selectedMerchant;
+  List<Widget> goodsWidgets = [];
 
   @override
   void initState() {
     super.initState();
-
-    Future.microtask(() => context.read<PurchaseOrderProvider>().loadPurchaseOrders());
+    Future.microtask(() => context.read<MerchantProvider>().loadMerchants());
+    Future.microtask(
+      () => context.read<PurchaseOrderProvider>().loadPurchaseOrders(),
+    );
   }
 
   // List purchaseOrders =;
@@ -34,84 +39,164 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
   }
 
   Future<void> _delete(PurchaseOrder purchaseOrder) async {
-    await context.read<PurchaseOrderProvider>().deletePurchaseOrder(purchaseOrder);
+    await context.read<PurchaseOrderProvider>().deletePurchaseOrder(
+      purchaseOrder,
+    );
   }
 
-  Future<dynamic> _addPurchaseOrderDialog(BuildContext context) {
+  Future<dynamic> _addPurchaseOrderDialog(
+    BuildContext context,
+    MerchantProvider merchantProvider,
+  ) {
     return showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add purchaseOrder'),
-        content: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxHeight: 400, // prevent infinite height
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _merchantName,
-                  decoration: const InputDecoration(labelText: 'Name'),
-                ),
-                TextField(
-                  controller: _purchaseOrderType,
-                  decoration: const InputDecoration(labelText: 'Type'),
-                ),
-                TextField(
-                  controller: _purchaseOrderMobileNumber,
-                  decoration: const InputDecoration(labelText: 'Mobile Number'),
-                ),
-                TextField(
-                  controller: _purchaseOrderAddress,
-                  decoration: const InputDecoration(labelText: 'Address'),
-                ),
-                                TextField(
-                  controller: _purchaseOrderNotes,
-                  decoration: const InputDecoration(labelText: 'Notes'),
-                ),
-              ],
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text('Add purchaseOrder'),
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxHeight: 400, // prevent infinite height
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text('Merchant Name: '),
+                      DropdownButton<Merchant>(
+                        value: selectedMerchant,
+                        items: merchantProvider.merchants
+                            .map(
+                              (m) => DropdownMenuItem(
+                                value: m,
+                                child: Text(m.name),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (m) => setState(() => selectedMerchant = m),
+
+                        // onTap: _refresh,
+                      ),
+                    ],
+                  ),
+                  TextField(
+                    controller: _totalPrice,
+                    decoration: const InputDecoration(
+                      labelText: 'Total Price: ',
+                    ),
+                  ),
+                  TextField(
+                    controller: _remainAmount,
+                    decoration: const InputDecoration(
+                      labelText: 'Remain Amount: ',
+                    ),
+                  ),
+                  ...goodsWidgets,
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.add),
+                    label: const Text('Add Goods Field'),
+                    onPressed: () {
+                      setState(() {
+                        goodsWidgets.add(
+                          Container(
+                            child: Column(
+                              children: [
+                                for (int i = 0; i < goodsWidgets.length; i++)
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextField(
+                                          decoration: const InputDecoration(
+                                            labelText: 'Goods Name',
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: TextField(
+                                          decoration: const InputDecoration(
+                                            labelText: 'Weight (g)',
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: IconButton(
+                                          onPressed: () =>
+                                              goodsWidgets.removeAt(i),
+                                          icon: Icon(Icons.remove),
+                                        ),
+                                      ),
+
+                                      // Expanded(
+                                      //   child: IconButton(
+                                      //     onPressed: () => {goodsWidgets.removeAt(1)},
+                                      //     icon: Icon(Icons.remove),
+                                      //   ),
+                                      // ),
+                                    ],
+                                  ),
+                              ],
+                            ),
+                          ),
+                        );
+                      });
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
 
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              // _addPurchaseOrder(PurchaseOrder(merchantName: _merchantName.text, : _purchaseOrderType.text,address: _purchaseOrderAddress.text, mobileNumber: _purchaseOrderMobileNumber.text,notes: _purchaseOrderNotes.text));
-              Navigator.pop(context); // close popup
-            },
-            child: const Text('Add'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context), // close dialog
-            child: const Text('Cancel'),
-          ),
-        ],
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                // if (selectedMerchant == null) return;
+                _addPurchaseOrder(
+                  PurchaseOrder(
+                    merchantName: selectedMerchant!.name,
+                    totalPrice: double.parse(_totalPrice.text),
+                    remainAmount: double.parse(_remainAmount.text),
+                    goods: [],
+                  ),
+                );
+                Navigator.pop(context); // close popup
+              },
+              child: const Text('Add'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context), // close dialog
+              child: const Text('Cancel'),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Future<dynamic> _showPurchaseOrderDialog(PurchaseOrder purchaseOrder) {
+  Future<dynamic> _showPurchaseOrderDialog(List<Goods> goods) {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Show purchaseOrder'),
-        content: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxHeight: 400, // prevent infinite height
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('Name: ${purchaseOrder.merchantName}'),
-                Text('Goods: ${purchaseOrder.goods}'),
-                Text('Date: ${purchaseOrder.date}'),
-                Text('Total price: ${purchaseOrder.totalPrice}'),
-                Text('Remain Amount: ${purchaseOrder.remainAmount}'),
-                Text('Notes: ${purchaseOrder.notes}'),
+        title: const Text('Show Purchase Order'),
+        content: SizedBox(
+          width: double.maxFinite, // helps with layout in dialogs
+          child: ListView.builder(
+            shrinkWrap: true, // ✅ let ListView size itself
+            physics:
+                const NeverScrollableScrollPhysics(), // ✅ disable its own scrolling
+            itemCount: goods.length,
+            itemBuilder: (_, i) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Name: ${goods[i].itemName}'),
+                  Text('Price: ${goods[i].priceForGrams}'),
+                  Text('Weight: ${goods[i].weightInGrams}'),
                 ],
+              ),
             ),
           ),
         ),
@@ -129,6 +214,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<PurchaseOrderProvider>();
+    final merchantProvider = context.watch<MerchantProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -140,7 +226,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
             IconButton(onPressed: _refresh, icon: Icon(Icons.refresh)),
             IconButton(
               onPressed: () {
-                _addPurchaseOrderDialog(context);
+                _addPurchaseOrderDialog(context, merchantProvider);
               },
               icon: Icon(Icons.add),
             ),
@@ -151,23 +237,54 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
         padding: EdgeInsets.zero,
         itemCount: provider.purchaseOrders.length,
         itemBuilder: (_, i) => TextButton(
-          onPressed: () => _showPurchaseOrderDialog(provider.purchaseOrders[i]),
+          onPressed: () =>
+              _showPurchaseOrderDialog(provider.purchaseOrders[i].goods),
           child: Card(
             elevation: 3,
             margin: const EdgeInsets.symmetric(vertical: 2),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(6),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(provider.purchaseOrders[i].merchantName),
-                const Spacer(),
-                IconButton(
-                  onPressed: () => _delete(provider.purchaseOrders[i]),
-                  icon: Icon(Icons.delete),
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 8.0,
+                horizontal: 16.0,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child:
+                        (provider.purchaseOrders[i].date?.isNotEmpty ?? false)
+                        ? Text(provider.purchaseOrders[i].date!)
+                        : const SizedBox.shrink(),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Text(provider.purchaseOrders[i].merchantName),
+                  ),
+                  // Expanded(
+                  //   flex: 3,
+                  //   child: Text(
+                  //     provider.purchaseOrders[i].goods.isNotEmpty
+                  //         ? provider.purchaseOrders[i].goods[i].itemName
+                  //         : '—',
+                  //   ),
+                  // ),
+                  Expanded(
+                    flex: 2,
+                    child: Text('${provider.purchaseOrders[i].totalPrice}'),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Text('${provider.purchaseOrders[i].remainAmount}'),
+                  ),
+                  IconButton(
+                    onPressed: () => _delete(provider.purchaseOrders[i]),
+                    icon: const Icon(Icons.delete, color: Colors.redAccent),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

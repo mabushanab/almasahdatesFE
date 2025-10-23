@@ -12,9 +12,9 @@ class PurchaseOrderRepository {
     return await _service.fetchPurchaseOrders();
   }
 
-  Future<void> addPurchaseOrder(PurchaseOrder item) async {
+  Future<void> addPurchaseOrder(PurchaseOrder purchaseOrder) async {
 
-    // return await _service.addPurchaseOrder(item);
+    return await _service.addPurchaseOrder(purchaseOrder);
   }
 
 

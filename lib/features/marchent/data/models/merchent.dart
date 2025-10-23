@@ -13,7 +13,7 @@ class Merchant {
     required this.address,
     required this.mobileNumber,
     this.notes,
-    this.rate,
+     this.rate,
   });
 
   factory Merchant.fromJson(Map<String, dynamic> json) => Merchant(
@@ -27,4 +27,13 @@ class Merchant {
 
     // type: json['name'],
   );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Merchant && name == other.name;
+
+  @override
+  int get hashCode => name.hashCode;
+  
 }

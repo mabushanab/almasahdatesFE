@@ -1,5 +1,4 @@
 // models/item.dart
-import 'dart:ffi';
 
 class Goods {
   final String itemName;
@@ -19,6 +18,12 @@ class Goods {
     priceForGrams: json['priceForGrams'],
     weightInGrams: json['weightInGrams'],
     notes: json['notes'],
-
   );
+
+  Map<String, dynamic> toJson() => {
+    'itemName': itemName,
+    'priceForGrams': priceForGrams,
+    'weightInGrams': weightInGrams,
+    'notes': notes,
+  };
 }
