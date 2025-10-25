@@ -1,9 +1,9 @@
 // models/item.dart
 
 class Goods {
-  final String itemName;
-  final double priceForGrams;
-  final double weightInGrams;
+   String itemName;
+   double priceForGrams;
+   double weightInGrams;
   String? notes;
 
   Goods({
