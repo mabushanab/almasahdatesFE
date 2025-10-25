@@ -1,6 +1,7 @@
 import 'package:almasah_dates/features/auth/data/services/auth_service.dart';
 import 'package:almasah_dates/features/home/presentation/screens/favs.dart';
 import 'package:almasah_dates/features/home/presentation/screens/generator_page.dart';
+import 'package:almasah_dates/features/home/presentation/screens/home_page%20copy.dart';
 import 'package:almasah_dates/features/items/presentation/screens/item_list_screen.dart';
 import 'package:almasah_dates/features/marchent/presentation/screens/merchant_list_screen.dart';
 import 'package:almasah_dates/features/purchaseOrder/presentation/screens/purchaseOrder_screen.dart';
@@ -32,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
         print('1');
         break;
       case 2:
-        page = ItemListScreen();
+        page = LandingPage();
         print('2');
         break;
       case 3:

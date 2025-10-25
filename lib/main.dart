@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Namer App',
-        theme: Theme.darkTheme,
+        theme: Theme.lightTheme,
         initialRoute: '/login',
         routes: AppRoutes.routes,
       ),
