@@ -19,6 +19,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
   final _remainAmount = TextEditingController();
   Merchant? selectedMerchant;
   List<Widget> goodsWidgets = [];
+  int i = 0;
 
   @override
   void initState() {
@@ -44,19 +45,26 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
     );
   }
 
+  Future<String> _removeGood(int i) async {
+    goodsWidgets.removeAt(i);
+    // i--;
+    // context.read<PurchaseOrderProvider>().loadPurchaseOrders();
+    return "Deleted";
+  }
+
   Future<dynamic> _addPurchaseOrderDialog(
     BuildContext context,
     MerchantProvider merchantProvider,
   ) {
+    goodsWidgets.clear();
+    i = 0;
     return showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
           title: const Text('Add purchaseOrder'),
           content: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxHeight: 400, // prevent infinite height
-            ),
+            constraints: const BoxConstraints(maxHeight: 400),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -76,8 +84,6 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                             )
                             .toList(),
                         onChanged: (m) => setState(() => selectedMerchant = m),
-
-                        // onTap: _refresh,
                       ),
                     ],
                   ),
@@ -93,57 +99,18 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                       labelText: 'Remain Amount: ',
                     ),
                   ),
-                  ...goodsWidgets,
+                  // _showItemDialog(context),
                   ElevatedButton.icon(
                     icon: const Icon(Icons.add),
                     label: const Text('Add Goods Field'),
                     onPressed: () {
-                      setState(() {
-                        goodsWidgets.add(
-                          Container(
-                            child: Column(
-                              children: [
-                                for (int i = 0; i < goodsWidgets.length; i++)
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextField(
-                                          decoration: const InputDecoration(
-                                            labelText: 'Goods Name',
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: TextField(
-                                          decoration: const InputDecoration(
-                                            labelText: 'Weight (g)',
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: IconButton(
-                                          onPressed: () =>
-                                              goodsWidgets.removeAt(i),
-                                          icon: Icon(Icons.remove),
-                                        ),
-                                      ),
+                      _showItemDialog(context);
 
-                                      // Expanded(
-                                      //   child: IconButton(
-                                      //     onPressed: () => {goodsWidgets.removeAt(1)},
-                                      //     icon: Icon(Icons.remove),
-                                      //   ),
-                                      // ),
-                                    ],
-                                  ),
-                              ],
-                            ),
-                          ),
-                        );
-                      });
+                      // _addGoods(setState);
                     },
                   ),
+                  // oncha
+                  ...goodsWidgets,
                 ],
               ),
             ),
@@ -172,6 +139,92 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Future<dynamic> _showItemDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text('Add item: '),
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 400),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _addGoods(setState),
+                  ...goodsWidgets
+                  ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  ElevatedButton _addGoods(StateSetter setState) {
+    return ElevatedButton.icon(
+      icon: const Icon(Icons.add),
+      label: const Text('Add Goods Field'),
+      onPressed: () {
+        // _showItemDialog(context);
+        setState(() {
+          goodsWidgets.add(
+            Row(
+              key: ValueKey(i),
+              children: [
+                Text('${i++}'),
+                Expanded(
+                  child: TextField(
+                    decoration: const InputDecoration(labelText: 'Goods Name'),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TextField(
+                    decoration: const InputDecoration(labelText: 'Price (g)'),
+                  ),
+                ),
+                Expanded(
+                  child: TextField(
+                    decoration: const InputDecoration(labelText: 'Weight (g)'),
+                  ),
+                ),
+                Expanded(
+                  child: TextField(
+                    decoration: const InputDecoration(labelText: 'Notes'),
+                  ),
+                ),
+                Expanded(
+                  child: IconButton(
+                    onPressed: () => {
+                      // goodsWidgets.forEach((element) => element),
+                      i--,
+                      _removeGood(i),
+                      setState(() => {}),
+                    },
+                    icon: Icon(Icons.remove),
+                  ),
+                ),
+                                Expanded(
+                  child: IconButton(
+                    onPressed: () => {
+                      // goodsWidgets.forEach((element) => element),
+                      i--,
+                      _removeGood(i),
+                      setState(() => {}),
+                    },
+                    icon: Icon(Icons.add),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+      },
     );
   }
 
@@ -263,14 +316,6 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                     flex: 3,
                     child: Text(provider.purchaseOrders[i].merchantName),
                   ),
-                  // Expanded(
-                  //   flex: 3,
-                  //   child: Text(
-                  //     provider.purchaseOrders[i].goods.isNotEmpty
-                  //         ? provider.purchaseOrders[i].goods[i].itemName
-                  //         : '—',
-                  //   ),
-                  // ),
                   Expanded(
                     flex: 2,
                     child: Text('${provider.purchaseOrders[i].totalPrice}'),

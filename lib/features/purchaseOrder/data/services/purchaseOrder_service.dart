@@ -34,7 +34,6 @@ class PurchaseOrderService {
     );
 
     if (response.statusCode == 200) {
-      print(response.body);
       final List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => PurchaseOrder.fromJson(json)).toList();
     } else {

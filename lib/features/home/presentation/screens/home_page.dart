@@ -14,7 +14,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var selectedIndex = 0;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  var selectedIndex = 1;
   final _authService = AuthService();
 
   Future<void> _logout() async {
@@ -26,10 +27,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     Widget page;
     switch (selectedIndex) {
-      case 0:
-        page = GeneratorPage();
-        print('0');
-        break;
       case 1:
         page = favs();
         print('1');
@@ -45,14 +42,19 @@ class _MyHomePageState extends State<MyHomePage> {
       case 4:
         page = PurchaseOrderListScreen();
         print('4');
-        break;        
+        break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
+    return _navigationBar(context, page);
+  }
+
+  Scaffold _navigationRail(BuildContext context, Widget page) {
     return Scaffold(
       body: Row(
         children: [
           SafeArea(
+            // bottom: true,
             child: NavigationRail(
               extended: false,
               destinations: [
@@ -71,7 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 NavigationRailDestination(
                   icon: Icon(Icons.people),
                   label: Text('Customers'),
-                  
                 ),
                 NavigationRailDestination(
                   icon: Icon(Icons.person_pin),
@@ -96,6 +97,45 @@ class _MyHomePageState extends State<MyHomePage> {
               child: page,
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  final List<Widget> _pages = [
+    Center(child: Text('Home Page')),
+    Center(child: Text('Favorites Page')),
+    Center(child: Text('Items Page')),
+    Center(child: Text('Customers Page')),
+    Center(child: Text('Merchants Page')),
+  ];
+
+  Scaffold _navigationBar(BuildContext context, Widget page) {
+    return Scaffold(
+      key: _scaffoldKey,
+      drawer: GeneratorPage(
+        onMenuSelect: (index) {
+          setState(() => selectedIndex = index);
+        },
+      ),
+      body: page,
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: selectedIndex,
+        onDestinationSelected: (index) {
+          if (index == 0) {
+            _scaffoldKey.currentState?.openDrawer();
+            return;
+          }
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+        destinations: [
+          NavigationDestination(icon: Icon(Icons.menu), label: 'Menue'),
+          NavigationDestination(icon: Icon(Icons.category), label: 'items'),
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.add), label: 'Add +'),
+          IconButton(onPressed: _logout, icon: Icon(Icons.logout)),
         ],
       ),
     );

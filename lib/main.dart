@@ -1,10 +1,10 @@
 import 'package:almasah_dates/features/items/presentation/providers/item_provider.dart';
+import 'package:almasah_dates/core/theme/theme.dart';
 import 'package:almasah_dates/features/marchent/presentation/providers/merchant_provider.dart';
-import 'package:almasah_dates/features/purchaseOrder/data/models/purchaseOrder.dart';
 import 'package:almasah_dates/features/purchaseOrder/presentation/providers/purchaseOrder_provider.dart';
 import 'package:almasah_dates/routes/routes.dart';
 import 'package:english_words/english_words.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Theme;
 import 'package:provider/provider.dart';
 
 void main() {
@@ -43,9 +43,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Namer App',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
-        ),
+        theme: Theme.darkTheme,
         initialRoute: '/login',
         routes: AppRoutes.routes,
       ),
