@@ -43,7 +43,32 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Namer App',
-        theme: Theme.lightTheme,
+        theme: ThemeData(
+          // scaffoldBackgroundColor: Colors.lightBlueAccent.shade100,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.deepPurpleAccent.shade100,
+secondary: Colors.amber,
+            // TRY THIS: Change to "Brightness.light"
+            //           and see that all colors change
+            //           to better contrast a light background.
+            brightness: Brightness.light,
+          ),
+          // textTheme: TextTheme(
+          //   displayLarge: const TextStyle(
+          //     fontSize: 22,
+          //     fontWeight: FontWeight.bold,
+          //   ),
+          //             titleLarge: GoogleFonts.oswald(
+          //   fontSize: 30,
+          //   fontStyle: FontStyle.italic,
+          // ),
+          // bodyMedium: GoogleFonts.merriweather(),
+          // displaySmall: GoogleFonts.pacifico(),
+        
+          ),
+
+          // colorSchemeSeed:
+        // ThemeData.light(),//Theme.darkTheme,
         initialRoute: '/login',
         routes: AppRoutes.routes,
       ),

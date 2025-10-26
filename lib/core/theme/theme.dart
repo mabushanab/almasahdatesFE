@@ -12,8 +12,8 @@ class Theme {
 
     useMaterial3: true,
     brightness: Brightness.light,
-    colorSchemeSeed: Colors.brown,
-    scaffoldBackgroundColor: Colors.grey[100],
+    colorSchemeSeed:  const Color.fromARGB(255, 70, 63, 45),
+    scaffoldBackgroundColor: Colors. grey[100],
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.white,
       foregroundColor: Colors.black,
