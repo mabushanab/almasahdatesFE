@@ -127,7 +127,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Items', style: TextStyle()),
+           Text('Items', style: TextStyle()),
             Spacer(),
             IconButton(onPressed: _refresh, icon: Icon(Icons.refresh)),
             IconButton(

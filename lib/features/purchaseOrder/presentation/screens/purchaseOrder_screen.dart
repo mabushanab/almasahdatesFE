@@ -221,28 +221,68 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
   }
 
   Future<dynamic> _showPurchaseOrderDialog(List<Goods> goods) {
+    TextStyle style = TextStyle(fontSize: MediaQuery.of(context).size.width * .04);
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Show Purchase Order'),
         content: SizedBox(
           width: double.maxFinite, // helps with layout in dialogs
-          child: ListView.builder(
-            shrinkWrap: true, // ✅ let ListView size itself
-            physics:
-                const NeverScrollableScrollPhysics(), // ✅ disable its own scrolling
-            itemCount: goods.length,
-            itemBuilder: (_, i) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                 children: [
-                  Text('Name: ${goods[i].itemName}'),
-                  Text('Price: ${goods[i].priceForGrams}'),
-                  Text('Weight: ${goods[i].weightInGrams}'),
+                  Column(
+                    children: [
+                      Text('Name',style: style),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Text('Price',style: style),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Text('Weight (g)',style: style),
+                    ],
+                  ),
                 ],
               ),
-            ),
+              ListView.builder(
+                shrinkWrap: true, // ✅ let ListView size itself
+                physics:
+                    const NeverScrollableScrollPhysics(), // ✅ disable its own scrolling
+                itemCount: goods.length,
+                itemBuilder: (_, i) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        children: [
+                          Text(goods[i].itemName),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text('${goods[i].priceForGrams}'),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text('${goods[i].weightInGrams}'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
 
@@ -310,7 +350,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                         : const SizedBox.shrink(),
                   ),
                   Expanded(
-                    flex: 3,
+                    flex: 2,
                     child: Text(provider.purchaseOrders[i].merchantName),
                   ),
                   Expanded(

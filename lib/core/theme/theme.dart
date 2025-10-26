@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Theme {
+class myTheme {
   // enum AppThemeMode { light, dark }
 
   static ThemeData getTheme() {
@@ -15,8 +15,9 @@ class Theme {
     colorSchemeSeed:  const Color.fromARGB(255, 70, 63, 45),
     scaffoldBackgroundColor: Colors. grey[100],
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.white,
-      foregroundColor: Colors.black,
+      backgroundColor: Color(0xFFEED5B7),
+      foregroundColor: Color.fromARGB(255, 0, 0, 0),
+      centerTitle: true,
       elevation: 0,
     ),
     textTheme: const TextTheme(
