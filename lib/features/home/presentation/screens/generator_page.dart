@@ -94,6 +94,7 @@ class GeneratorPage extends StatelessWidget {
             leading: const Icon(Icons.home),
             title: const Text('Home'),
             onTap: () {
+              onMenuSelect(2);
               // Navigator.pushReplacementNamed(context, '/login');
               // Navigator. pop(context);
             },
@@ -102,7 +103,6 @@ class GeneratorPage extends StatelessWidget {
             leading: const Icon(Icons.people),
             title: const Text('Merchants'),
             onTap: () {
-              Navigator.pop(context); // close drawer
               onMenuSelect(4);
               // setState(() {
               // selectedIndex = 3; // or whatever index is the "Merchants" page
