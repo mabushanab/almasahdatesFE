@@ -10,7 +10,7 @@ class CustomerService {
 
 
   Future<void> deleteCustomer(String name) async {
-    final url = Uri.parse('$baseUrl/mustomer/$name');
+    final url = Uri.parse('$baseUrl/customer/$name');
     String? token = await _authService.getToken();
     final response = await http.delete(
       url,
@@ -25,7 +25,7 @@ class CustomerService {
 
   Future<List<Customer>> fetchCustomers() async {
     String? token = await _authService.getToken();
-    final url = Uri.parse('$baseUrl/mustomer/list');
+    final url = Uri.parse('$baseUrl/customer/list');
     final response = await http.get(
       url,
       headers: {
@@ -39,22 +39,22 @@ class CustomerService {
       final List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => Customer.fromJson(json)).toList();
     } else {
-      throw Exception('Failed to load mustomers');
+      throw Exception('Failed to load customers');
     }
   }
 
-  Future<void> addCustomer(Customer mustomer) async {
-    final url = Uri.parse('$baseUrl/mustomer/create');
+  Future<void> addCustomer(Customer customer) async {
+    final url = Uri.parse('$baseUrl/customer/create');
     String? token = await _authService.getToken();
-    print(jsonEncode({'name': mustomer.name, 'type': mustomer.type}));
+    print(jsonEncode({'name': customer.name, 'type': customer.type}));
     final response = await http.post(
       url,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({'name': mustomer.name, 'type': mustomer.type, 'mobileNumber': mustomer.mobileNumber, 'address': mustomer.address, 'rate': mustomer.rate,
-      'notes': mustomer.notes
+      body: jsonEncode({'name': customer.name, 'type': customer.type, 'mobileNumber': customer.mobileNumber, 'address': customer.address, 'rate': customer.rate,
+      'notes': customer.notes
       })
     );
     print(response.body);
