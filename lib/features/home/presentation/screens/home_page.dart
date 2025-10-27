@@ -1,4 +1,5 @@
 import 'package:almasah_dates/features/auth/data/services/auth_service.dart';
+import 'package:almasah_dates/features/customer/presentation/screens/customer_list_screen.dart';
 import 'package:almasah_dates/features/home/presentation/screens/generator_page.dart';
 import 'package:almasah_dates/features/home/presentation/screens/landing_page.dart';
 import 'package:almasah_dates/features/items/presentation/screens/item_list_screen.dart';
@@ -28,6 +29,7 @@ class _MyHomePageState extends State<MyHomePage> {
       GeneratorPage(onMenuSelect: goToPage),
       ItemListScreen(),
       LandingPage(onMenuSelect: goToPage),
+      CustomerListScreen(),
       MerchantListScreen(),
       PurchaseOrderListScreen(),
       SaleOrderListScreen(),

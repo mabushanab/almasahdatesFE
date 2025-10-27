@@ -28,8 +28,6 @@ class GeneratorPage extends StatelessWidget {
     } else {
       icon = Icons.favorite_border;
     }
-
-    // return _menueT(pair, _refresh, appState, icon);
     return _menue(context);
   }
 
@@ -77,9 +75,7 @@ class GeneratorPage extends StatelessWidget {
         children: [
           SizedBox(
             height:
-                MediaQuery.of(context).size.height *
-                0.1, //constraints.maxHeight * 0.1,
-            // constraints.maxHeight * 0.3,
+                MediaQuery.of(context).size.height * 0.1,
             child: DrawerHeader(
               decoration: BoxDecoration(
                 color: Color.fromARGB(255, 158, 49, 16),
@@ -95,18 +91,34 @@ class GeneratorPage extends StatelessWidget {
             title: const Text('Home'),
             onTap: () {
               onMenuSelect(2);
-              // Navigator.pushReplacementNamed(context, '/login');
-              // Navigator. pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.people),
+            title: const Text('Customers'),
+            onTap: () {
+              onMenuSelect(3);
             },
           ),
           ListTile(
             leading: const Icon(Icons.people),
             title: const Text('Merchants'),
             onTap: () {
+              onMenuSelect(4);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.people),
+            title: const Text('Perchase Orders'),
+            onTap: () {
               onMenuSelect(5);
-              // setState(() {
-              // selectedIndex = 3; // or whatever index is the "Merchants" page
-              // Navigator.pushReplacementNamed(context, '/purchaseOrder');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.people),
+            title: const Text('Sale Orders'),
+            onTap: () {
+              onMenuSelect(6);
             },
           ),
           ListTile(
@@ -115,7 +127,6 @@ class GeneratorPage extends StatelessWidget {
             onTap: () {
               final success = _authService.logout();
               Navigator.pushReplacementNamed(context, '/login');
-              // Navigator.pop(context);
             },
           ),
         ],
