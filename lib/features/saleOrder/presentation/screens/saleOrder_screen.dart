@@ -19,6 +19,7 @@ class SaleOrderListScreen extends StatefulWidget {
 class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
   final _totalPrice = TextEditingController();
   final _remainAmount = TextEditingController();
+  // final _quantity = TextEditingController();
   Customer? selectedCustomer;
   Item? selectedItem;
   List<Widget> productWidgets = [];
@@ -187,12 +188,15 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                     ],
                   ),
                   TextField(
-                    decoration: const InputDecoration(labelText: 'Price (g)'),
+                    decoration: const InputDecoration(labelText: 'Price for item'),
                     onChanged: (value) => g.priceForItem = double.parse(value),
                   ),
                   TextField(
-                    decoration: const InputDecoration(labelText: 'Wight (g)'),
-                    onChanged: (value) => g.quantity = double.parse(value),
+                    decoration: const InputDecoration(labelText: 'quantity'),
+                    onChanged: (value) => g.quantity = int.parse(value),
+                  ),                  TextField(
+                    decoration: const InputDecoration(labelText: 'box cost'),
+                    onChanged: (value) => g.boxCost = double.parse(value),
                   ),
                 ],
               ),

@@ -1,10 +1,10 @@
 // models/item.dart
 
 class Product {
-   String itemName;
-   double priceForItem;
-   double quantity;
-   double boxCost;
+  String itemName;
+  double priceForItem;
+  int quantity;
+  double boxCost;
   String? notes;
 
   Product({
