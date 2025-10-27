@@ -1,28 +1,28 @@
+import 'package:almasah_dates/features/customer/data/models/customer.dart';
+import 'package:almasah_dates/features/customer/presentation/providers/customer_provider.dart';
 import 'package:almasah_dates/features/items/data/models/item.dart';
 import 'package:almasah_dates/features/items/presentation/providers/item_provider.dart';
-import 'package:almasah_dates/features/purchaseOrder/data/models/goods.dart';
-import 'package:almasah_dates/features/marchent/data/models/merchent.dart';
-import 'package:almasah_dates/features/marchent/presentation/providers/merchant_provider.dart';
-import 'package:almasah_dates/features/purchaseOrder/data/models/purchaseOrder.dart';
-import 'package:almasah_dates/features/purchaseOrder/presentation/providers/purchaseOrder_provider.dart';
+import 'package:almasah_dates/features/saleOrder/data/models/product.dart';
+import 'package:almasah_dates/features/saleOrder/data/models/saleOrder.dart';
+import 'package:almasah_dates/features/saleOrder/presentation/providers/saleOrder_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PurchaseOrderListScreen extends StatefulWidget {
-  const PurchaseOrderListScreen({super.key});
+class SaleOrderListScreen extends StatefulWidget {
+  const SaleOrderListScreen({super.key});
 
   @override
-  State<PurchaseOrderListScreen> createState() =>
-      _PurchaseOrderListScreenState();
+  State<SaleOrderListScreen> createState() =>
+      _SaleOrderListScreenState();
 }
 
-class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
+class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
   final _totalPrice = TextEditingController();
   final _remainAmount = TextEditingController();
-  Merchant? selectedMerchant;
+  Customer? selectedCustomer;
   Item? selectedItem;
-  List<Widget> goodsWidgets = [];
-  List<Goods> goods = [];
+  List<Widget> productWidgets = [];
+  List<Product> product = [];
   int i = 0;
 
   @override
@@ -30,41 +30,41 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
     super.initState();
     Future.microtask(() => context.read<ItemProvider>().loadItems());
 
-    Future.microtask(() => context.read<MerchantProvider>().loadMerchants());
+    Future.microtask(() => context.read<CustomerProvider>().loadCustomers());
     Future.microtask(
-      () => context.read<PurchaseOrderProvider>().loadPurchaseOrders(),
+      () => context.read<SaleOrderProvider>().loadSaleOrders(),
     );
   }
 
   Future<void> _refresh() async {
-    await context.read<PurchaseOrderProvider>().loadPurchaseOrders();
+    await context.read<SaleOrderProvider>().loadSaleOrders();
   }
 
-  Future<void> _addPurchaseOrder(PurchaseOrder purchaseOrder) async {
-    await context.read<PurchaseOrderProvider>().addPurchaseOrder(purchaseOrder);
+  Future<void> _addSaleOrder(SaleOrder saleOrder) async {
+    await context.read<SaleOrderProvider>().addSaleOrder(saleOrder);
   }
 
-  Future<void> _delete(PurchaseOrder purchaseOrder) async {
-    await context.read<PurchaseOrderProvider>().deletePurchaseOrder(
-      purchaseOrder,
+  Future<void> _delete(SaleOrder saleOrder) async {
+    await context.read<SaleOrderProvider>().deleteSaleOrder(
+      saleOrder,
     );
   }
 
   Future<String> _removeGood(int i) async {
-    goodsWidgets.removeAt(i);
+    productWidgets.removeAt(i);
     return "Deleted";
   }
 
-  Future<dynamic> _addPurchaseOrderDialog(
+  Future<dynamic> _addSaleOrderDialog(
     BuildContext context,
-    MerchantProvider merchantProvider,
+    CustomerProvider customerProvider,
     ItemProvider itemProvider,
   ) {
     // final itemProvider = context.watch<ItemProvider>();
 
-    goodsWidgets.clear();
-    goods.clear();
-    selectedMerchant = null;
+    productWidgets.clear();
+    product.clear();
+    selectedCustomer = null;
     _remainAmount.clear();
     _totalPrice.clear();
     i = 0;
@@ -72,7 +72,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Add purchaseOrder'),
+          title: const Text('Add saleOrder'),
           content: ConstrainedBox(
             constraints: const BoxConstraints(maxHeight: 400),
             child: SingleChildScrollView(
@@ -82,10 +82,10 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Text('Merchant Name: '),
-                      DropdownButton<Merchant>(
-                        value: selectedMerchant,
-                        items: merchantProvider.merchants
+                      Text('Customer Name: '),
+                      DropdownButton<Customer>(
+                        value: selectedCustomer,
+                        items: customerProvider.customers
                             .map(
                               (m) => DropdownMenuItem(
                                 value: m,
@@ -93,7 +93,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                               ),
                             )
                             .toList(),
-                        onChanged: (m) => setState(() => selectedMerchant = m),
+                        onChanged: (m) => setState(() => selectedCustomer = m),
                       ),
                     ],
                   ),
@@ -111,13 +111,13 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                   ),
                   ElevatedButton.icon(
                     icon: const Icon(Icons.add),
-                    label: const Text('Add Goods'),
+                    label: const Text('Add Product'),
                     onPressed: () {
                       _showItemDialog(context, itemProvider);
                       setState() => {};
                     },
                   ),
-                  ...goodsWidgets,
+                  ...productWidgets,
                 ],
               ),
             ),
@@ -126,12 +126,12 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                _addPurchaseOrder(
-                  PurchaseOrder(
-                    merchantName: selectedMerchant!.name,
+                _addSaleOrder(
+                  SaleOrder(
+                    customerName: selectedCustomer!.name,
                     totalPrice: double.parse(_totalPrice.text),
                     remainAmount: double.parse(_remainAmount.text),
-                    goods: goods,
+                    products: product,
                   ),
                 );
                 Navigator.pop(context);
@@ -152,7 +152,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
     BuildContext context,
     ItemProvider itemProvider,
   ) {
-    Goods g = Goods(itemName: 'name', priceForGrams: 0, weightInGrams: 0);
+    Product g = Product(itemName: 'name', priceForItem: 0, quantity: 0,boxCost: 0);
     return showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -188,11 +188,11 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                   ),
                   TextField(
                     decoration: const InputDecoration(labelText: 'Price (g)'),
-                    onChanged: (value) => g.priceForGrams = double.parse(value),
+                    onChanged: (value) => g.priceForItem = double.parse(value),
                   ),
                   TextField(
                     decoration: const InputDecoration(labelText: 'Wight (g)'),
-                    onChanged: (value) => g.weightInGrams = double.parse(value),
+                    onChanged: (value) => g.quantity = double.parse(value),
                   ),
                 ],
               ),
@@ -203,7 +203,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
               icon: const Icon(Icons.add),
               label: const Text('Add'),
               onPressed: () {
-                goods.add(g);
+                product.add(g);
                 Navigator.pop(context);
               },
             ),
@@ -220,12 +220,12 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
     );
   }
 
-  Future<dynamic> _showPurchaseOrderDialog(List<Goods> goods) {
+  Future<dynamic> _showSaleOrderDialog(List<Product> product) {
     TextStyle style = TextStyle(fontSize: MediaQuery.of(context).size.width * .04);
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Show Purchase Order'),
+        title: const Text('Show Sale Order'),
         content: SizedBox(
           width: double.maxFinite, // helps with layout in dialogs
           child: Column(
@@ -256,7 +256,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                 shrinkWrap: true, // ✅ let ListView size itself
                 physics:
                     const NeverScrollableScrollPhysics(), // ✅ disable its own scrolling
-                itemCount: goods.length,
+                itemCount: product.length,
                 itemBuilder: (_, i) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Row(
@@ -265,17 +265,17 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                     children: [
                       Column(
                         children: [
-                          Text(goods[i].itemName),
+                          Text(product[i].itemName),
                         ],
                       ),
                       Column(
                         children: [
-                          Text('${goods[i].priceForGrams}'),
+                          Text('${product[i].priceForItem}'),
                         ],
                       ),
                       Column(
                         children: [
-                          Text('${goods[i].weightInGrams}'),
+                          Text('${product[i].quantity}'),
                         ],
                       ),
                     ],
@@ -298,8 +298,8 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<PurchaseOrderProvider>();
-    final merchantProvider = context.watch<MerchantProvider>();
+    final provider = context.watch<SaleOrderProvider>();
+    final customerProvider = context.watch<CustomerProvider>();
     final itemProvider = context.watch<ItemProvider>();
 
     return Scaffold(
@@ -307,14 +307,14 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('PurchaseOrders', style: TextStyle()),
+            const Text('SaleOrders', style: TextStyle()),
             Spacer(),
             IconButton(onPressed: _refresh, icon: Icon(Icons.refresh)),
             IconButton(
               onPressed: () {
-                _addPurchaseOrderDialog(
+                _addSaleOrderDialog(
                   context,
-                  merchantProvider,
+                  customerProvider,
                   itemProvider,
                 );
               },
@@ -325,10 +325,10 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
       ),
       body: ListView.builder(
         padding: EdgeInsets.zero,
-        itemCount: provider.purchaseOrders.length,
+        itemCount: provider.saleOrders.length,
         itemBuilder: (_, i) => TextButton(
           onPressed: () =>
-              _showPurchaseOrderDialog(provider.purchaseOrders[i].goods),
+              _showSaleOrderDialog(provider.saleOrders[i].products),
           child: Card(
             elevation: 3,
             margin: const EdgeInsets.symmetric(vertical: 2),
@@ -345,24 +345,24 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                   Expanded(
                     flex: 2,
                     child:
-                        (provider.purchaseOrders[i].date?.isNotEmpty ?? false)
-                        ? Text(provider.purchaseOrders[i].date!)
+                        (provider.saleOrders[i].date?.isNotEmpty ?? false)
+                        ? Text(provider.saleOrders[i].date!)
                         : const SizedBox.shrink(),
                   ),
                   Expanded(
                     flex: 2,
-                    child: Text(provider.purchaseOrders[i].merchantName),
+                    child: Text(provider.saleOrders[i].customerName),
                   ),
                   Expanded(
                     flex: 2,
-                    child: Text('${provider.purchaseOrders[i].totalPrice}'),
+                    child: Text('${provider.saleOrders[i].totalPrice}'),
                   ),
                   Expanded(
                     flex: 2,
-                    child: Text('${provider.purchaseOrders[i].remainAmount}'),
+                    child: Text('${provider.saleOrders[i].remainAmount}'),
                   ),
                   IconButton(
-                    onPressed: () => _delete(provider.purchaseOrders[i]),
+                    onPressed: () => _delete(provider.saleOrders[i]),
                     icon: const Icon(Icons.delete, color: Colors.redAccent),
                   ),
                 ],

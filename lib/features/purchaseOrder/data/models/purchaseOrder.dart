@@ -1,5 +1,5 @@
 // models/item.dart
-import 'package:almasah_dates/features/goods/data/models/goods.dart';
+import 'package:almasah_dates/features/purchaseOrder/data/models/goods.dart';
 
 class PurchaseOrder {
   final String merchantName;

@@ -103,7 +103,7 @@ class GeneratorPage extends StatelessWidget {
             leading: const Icon(Icons.people),
             title: const Text('Merchants'),
             onTap: () {
-              onMenuSelect(4);
+              onMenuSelect(5);
               // setState(() {
               // selectedIndex = 3; // or whatever index is the "Merchants" page
               // Navigator.pushReplacementNamed(context, '/purchaseOrder');

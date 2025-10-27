@@ -1,7 +1,9 @@
 import 'package:almasah_dates/core/theme/theme.dart';
+import 'package:almasah_dates/features/customer/presentation/providers/customer_provider.dart';
 import 'package:almasah_dates/features/items/presentation/providers/item_provider.dart';
 import 'package:almasah_dates/features/marchent/presentation/providers/merchant_provider.dart';
 import 'package:almasah_dates/features/purchaseOrder/presentation/providers/purchaseOrder_provider.dart';
+import 'package:almasah_dates/features/saleOrder/presentation/providers/saleOrder_provider.dart';
 import 'package:almasah_dates/routes/routes.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +41,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MyAppState()),
         ChangeNotifierProvider(create: (_) => ItemProvider()),
         ChangeNotifierProvider(create: (_) => MerchantProvider()),
+        ChangeNotifierProvider(create: (_) => CustomerProvider()),
         ChangeNotifierProvider(create: (_) => PurchaseOrderProvider()),
+        ChangeNotifierProvider(create: (_) => SaleOrderProvider()),
       ],
       child: MaterialApp(
         title: 'Namer App',

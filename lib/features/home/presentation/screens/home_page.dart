@@ -4,6 +4,7 @@ import 'package:almasah_dates/features/home/presentation/screens/landing_page.da
 import 'package:almasah_dates/features/items/presentation/screens/item_list_screen.dart';
 import 'package:almasah_dates/features/marchent/presentation/screens/merchant_list_screen.dart';
 import 'package:almasah_dates/features/purchaseOrder/presentation/screens/purchaseOrder_screen.dart';
+import 'package:almasah_dates/features/saleOrder/presentation/screens/saleOrder_screen.dart';
 import 'package:flutter/material.dart';
 
 // ...
@@ -29,6 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
       LandingPage(onMenuSelect: goToPage),
       MerchantListScreen(),
       PurchaseOrderListScreen(),
+      SaleOrderListScreen(),
     ]);
   }
 
