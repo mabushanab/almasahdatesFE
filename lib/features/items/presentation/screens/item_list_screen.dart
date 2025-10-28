@@ -125,8 +125,8 @@ class _ItemListScreenState extends State<ItemListScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Name: ' + item.name),
-                Text('Type: ' + item.type),
+                Text('Name: ${item.name}'),
+                Text('Type: ${item.type}'),
               ],
             ),
           ),

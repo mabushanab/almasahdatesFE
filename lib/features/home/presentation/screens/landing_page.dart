@@ -1,4 +1,6 @@
+import 'package:almasah_dates/features/home/presentation/providers/home_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // ...
 
@@ -11,7 +13,16 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   @override
+  void initState() {
+    super.initState();
+
+    // ✅ Load items once when the screen opens
+    Future.microtask(() => context.read<HomeProvider>().loadHomes());
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final provider = context.watch<HomeProvider>();
     return Scaffold(
       floatingActionButton: ElevatedButton(
         onPressed: () => {},
@@ -39,7 +50,28 @@ class _LandingPageState extends State<LandingPage> {
                             children: [
                               Icon(
                                 Icons.attach_money_rounded,
-                    
+
+                                size: MediaQuery.of(context).size.width * .05,
+                                // weight: 300,
+                              ),
+                              // Text('Balance'),
+                              Text('Credit:${provider.home.sumPO}'),
+                              Text('Debit: ${provider.home.sumSO}'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => {},
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.attach_money_rounded,
+
                                 size: MediaQuery.of(context).size.width * .05,
                                 // weight: 300,
                               ),
@@ -60,28 +92,7 @@ class _LandingPageState extends State<LandingPage> {
                             children: [
                               Icon(
                                 Icons.attach_money_rounded,
-                    
-                                size: MediaQuery.of(context).size.width * .05,
-                                // weight: 300,
-                              ),
-                              // Text('Balance'),
-                              Text('Credit: 500'),
-                              Text('Debit: -200'),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () => {},
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.attach_money_rounded,
-                    
+
                                 size: MediaQuery.of(context).size.width * .05,
                                 // weight: 300,
                               ),
@@ -102,7 +113,7 @@ class _LandingPageState extends State<LandingPage> {
                             children: [
                               Icon(
                                 Icons.store_mall_directory_rounded,
-                    
+
                                 size: MediaQuery.of(context).size.width * .05,
                                 // weight: 300,
                               ),
@@ -123,7 +134,7 @@ class _LandingPageState extends State<LandingPage> {
                             children: [
                               Icon(
                                 Icons.insert_chart_outlined,
-                    
+
                                 size: MediaQuery.of(context).size.width * .05,
                                 // weight: 300,
                               ),

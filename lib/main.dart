@@ -1,5 +1,6 @@
 import 'package:almasah_dates/core/theme/theme.dart';
 import 'package:almasah_dates/features/customer/presentation/providers/customer_provider.dart';
+import 'package:almasah_dates/features/home/presentation/providers/home_provider.dart';
 import 'package:almasah_dates/features/items/presentation/providers/item_provider.dart';
 import 'package:almasah_dates/features/marchent/presentation/providers/merchant_provider.dart';
 import 'package:almasah_dates/features/purchaseOrder/presentation/providers/purchaseOrder_provider.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CustomerProvider()),
         ChangeNotifierProvider(create: (_) => PurchaseOrderProvider()),
         ChangeNotifierProvider(create: (_) => SaleOrderProvider()),
+        ChangeNotifierProvider(create: (_) => HomeProvider()),
       ],
       child: MaterialApp(
         title: 'Namer App',
