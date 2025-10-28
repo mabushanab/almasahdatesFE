@@ -66,6 +66,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
                       if (value == null || value.trim().isEmpty) {
                         return "Name is required";
                       }
+                      return null;
                     },
                   ),
                   TextFormField(
@@ -75,6 +76,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
                       if (value == null || value.trim().isEmpty) {
                         return "Type is required";
                       }
+                      return null;
                     },
                   ),
                   TextField(

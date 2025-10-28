@@ -37,8 +37,6 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
   }
 
   bool _validateAddingSO() {
-    // print(goods.first.itemName);
-    // print(_formKey.currentState!.validate() || goods.isEmpty);
     return (_formKey.currentState!.validate() && product.isNotEmpty);
   }
 
@@ -56,11 +54,6 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
 
   Future<void> _delete(SaleOrder saleOrder) async {
     await context.read<SaleOrderProvider>().deleteSaleOrder(saleOrder);
-  }
-
-  Future<String> _removeGood(int i) async {
-    productWidgets.removeAt(i);
-    return "Deleted";
   }
 
   Future<dynamic> _addSaleOrderDialog(
@@ -110,6 +103,7 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                               if (value == null) {
                                 return "Merchant is required";
                               }
+                              return null;
                             },
                           ),
                         ),
@@ -128,6 +122,7 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                         if (number == null) {
                           return "Please enter a valid number";
                         }
+                        return null;
                       },
                     ),
                     TextFormField(
@@ -140,11 +135,25 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                       icon: const Icon(Icons.add),
                       label: const Text('Add Product'),
                       onPressed: () {
-                        _showItemDialog(context, itemProvider);
-                        setState() => {};
+                        _showItemDialog(context, itemProvider, setState);
                       },
                     ),
-                    ...productWidgets,
+                    ...product.map(
+                      (g) => ListTile(
+                        title: Text(g.itemName),
+                        subtitle: Text(
+                          'Price: ${g.priceForItem}, Qty: ${g.quantity}, Box: ${g.boxCost}',
+                        ),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            setState(() {
+                              product.remove(g);
+                            });
+                          },
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -159,7 +168,7 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                     SaleOrder(
                       customerName: selectedCustomer!.name,
                       totalPrice: double.parse(_totalPrice.text),
-                      remainAmount: double.parse(_remainAmount.text),
+                      remainAmount: double.tryParse(_remainAmount.text) ?? 0.0,
                       products: product,
                     ),
                   );
@@ -181,6 +190,7 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
   Future<dynamic> _showItemDialog(
     BuildContext context,
     ItemProvider itemProvider,
+    void Function(void Function()) parentSetState,
   ) {
     Product g = Product(
       itemName: 'name',
@@ -204,25 +214,28 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Text('Item Name: '),
-                      DropdownButtonFormField<Item>(
-                        initialValue: selectedItem,
-                        items: itemProvider.items
-                            .map(
-                              (m) => DropdownMenuItem(
-                                value: m,
-                                child: Text(m.name),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (m) => {
-                          setState(() => selectedItem = m),
-                          g.itemName = selectedItem!.name,
-                        },
-                        validator: (value) {
-                          if (value == null) {
-                            return "Item is required";
-                          }
-                        },
+                      Flexible(
+                        child: DropdownButtonFormField<Item>(
+                          initialValue: selectedItem,
+                          items: itemProvider.items
+                              .map(
+                                (m) => DropdownMenuItem(
+                                  value: m,
+                                  child: Text(m.name),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (m) => {
+                            setState(() => selectedItem = m),
+                            g.itemName = selectedItem!.name,
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return "Item is required";
+                            }
+                            return null;
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -239,6 +252,7 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                       if (number == null) {
                         return "Please enter a valid number";
                       }
+                      return null;
                     },
                   ),
                   TextFormField(
@@ -252,11 +266,13 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                       if (number == null) {
                         return "Please enter a valid number";
                       }
+                      return null;
                     },
                   ),
                   TextField(
                     decoration: const InputDecoration(labelText: 'box cost'),
-                    onChanged: (value) => g.boxCost = double.tryParse(value)?? 0.0,
+                    onChanged: (value) =>
+                        g.boxCost = double.tryParse(value) ?? 0.0,
                   ),
                 ],
               ),
@@ -268,7 +284,9 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
               label: const Text('Add'),
               onPressed: () {
                 if (_validateAddingItem()) {
-                  product.add(g);
+                  parentSetState(() {
+                    product.add(g);
+                  });
                   Navigator.pop(context);
                 }
               },

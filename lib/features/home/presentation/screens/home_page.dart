@@ -37,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _logout() async {
-    final success = await _authService.logout();
+    await _authService.logout();
     Navigator.pushReplacementNamed(context, '/login');
   }
 

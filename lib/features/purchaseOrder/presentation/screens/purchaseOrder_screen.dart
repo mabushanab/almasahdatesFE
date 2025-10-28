@@ -62,11 +62,6 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
     );
   }
 
-  Future<String> _removeGood(int i) async {
-    goodsWidgets.removeAt(i);
-    return "Deleted";
-  }
-
   Future<dynamic> _addPurchaseOrderDialog(
     BuildContext context,
     MerchantProvider merchantProvider,
@@ -115,6 +110,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                               if (value == null) {
                                 return "Merchant is required";
                               }
+                              return null;
                             },
                           ),
                         ),
@@ -133,6 +129,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                         if (number == null) {
                           return "Please enter a valid number";
                         }
+                        return null;
                       },
                     ),
                     TextField(
@@ -145,11 +142,26 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                       icon: const Icon(Icons.add),
                       label: const Text('Add Goods'),
                       onPressed: () {
-                        _showItemDialog(context, itemProvider);
-                        setState() => {};
+                        _showItemDialog(context, itemProvider, setState);
                       },
                     ),
                     ...goodsWidgets,
+                    ...goods.map(
+                      (g) => ListTile(
+                        title: Text(g.itemName),
+                        subtitle: Text(
+                          'Price: ${g.priceForGrams}, Qty: ${g.weightInGrams}',
+                        ),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            setState(() {
+                              goods.remove(g);
+                            });
+                          },
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -186,6 +198,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
   Future<dynamic> _showItemDialog(
     BuildContext context,
     ItemProvider itemProvider,
+    void Function(void Function()) parentSetState,
   ) {
     Goods g = Goods(itemName: 'name', priceForGrams: 0, weightInGrams: 0);
     selectedItem = null;
@@ -223,6 +236,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                             if (value == null) {
                               return "Item is required";
                             }
+                            return null;
                           },
                         ),
                       ),
@@ -239,6 +253,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                       if (number == null) {
                         return "Please enter a valid number";
                       }
+                      return null;
                     },
                   ),
                   TextFormField(
@@ -252,6 +267,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                       if (number == null) {
                         return "Please enter a valid number";
                       }
+                      return null;
                     },
                   ),
                 ],
@@ -264,7 +280,9 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
               label: const Text('Add'),
               onPressed: () {
                 if (_validateAddingItem()) {
-                  goods.add(g);
+                  parentSetState(() {
+                    goods.add(g);
+                  });
                   Navigator.pop(context);
                 }
               },

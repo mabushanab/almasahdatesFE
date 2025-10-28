@@ -1,7 +1,6 @@
 // screens/customer_list_screen.dart
 import 'package:almasah_dates/features/customer/data/models/customer.dart';
 import 'package:almasah_dates/features/customer/presentation/providers/customer_provider.dart';
-import 'package:almasah_dates/features/marchent/data/models/merchent.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -68,6 +67,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                       if (value == null || value.trim().isEmpty) {
                         return "Name is required";
                       }
+                      return null;
                     },
                   ),
                   TextFormField(
@@ -77,6 +77,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                       if (value == null || value.trim().isEmpty) {
                         return "Type is required";
                       }
+                      return null;
                     },
                   ),
                   TextField(
@@ -92,6 +93,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                       if (value == null || value.trim().isEmpty) {
                         return "Adress is required";
                       }
+                      return null;
                     },
                   ),
                   TextField(
