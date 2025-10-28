@@ -19,6 +19,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
   final _customerMobileNumber = TextEditingController();
   final _customerNotes = TextEditingController();
   // final _customerRate = TextEditingController();
+  final _formKey = GlobalKey<FormState>(); // Key to access the Form
 
   @override
   void initState() {
@@ -26,6 +27,10 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
     // ✅ Load customers once when the screen opens
     Future.microtask(() => context.read<CustomerProvider>().loadCustomers());
+  }
+
+  bool _validateAddingItem() {
+    return (_formKey.currentState!.validate());
   }
 
   // List customers =;
@@ -51,30 +56,50 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
             maxHeight: 400, // prevent infinite height
           ),
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _customerName,
-                  decoration: const InputDecoration(labelText: 'Name'),
-                ),
-                TextField(
-                  controller: _customerType,
-                  decoration: const InputDecoration(labelText: 'Type'),
-                ),
-                TextField(
-                  controller: _customerMobileNumber,
-                  decoration: const InputDecoration(labelText: 'Mobile Number'),
-                ),
-                TextField(
-                  controller: _customerAddress,
-                  decoration: const InputDecoration(labelText: 'Address'),
-                ),
-                                TextField(
-                  controller: _customerNotes,
-                  decoration: const InputDecoration(labelText: 'Notes'),
-                ),
-              ],
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: _customerName,
+                    decoration: const InputDecoration(labelText: 'Name'),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Name is required";
+                      }
+                    },
+                  ),
+                  TextFormField(
+                    controller: _customerType,
+                    decoration: const InputDecoration(labelText: 'Type'),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Type is required";
+                      }
+                    },
+                  ),
+                  TextField(
+                    controller: _customerMobileNumber,
+                    decoration: const InputDecoration(
+                      labelText: 'Mobile Number',
+                    ),
+                  ),
+                  TextFormField(
+                    controller: _customerAddress,
+                    decoration: const InputDecoration(labelText: 'Address'),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Adress is required";
+                      }
+                    },
+                  ),
+                  TextField(
+                    controller: _customerNotes,
+                    decoration: const InputDecoration(labelText: 'Notes'),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -82,8 +107,18 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
         actions: [
           ElevatedButton(
             onPressed: () {
-              _addCustomer(Customer(name: _customerName.text, type: _customerType.text,address: _customerAddress.text, mobileNumber: _customerMobileNumber.text,notes: _customerNotes.text));
-              Navigator.pop(context); // close popup
+              if (_validateAddingItem()) {
+                _addCustomer(
+                  Customer(
+                    name: _customerName.text,
+                    type: _customerType.text,
+                    address: _customerAddress.text,
+                    mobileNumber: _customerMobileNumber.text,
+                    notes: _customerNotes.text,
+                  ),
+                );
+                Navigator.pop(context);
+              } // close popup
             },
             child: const Text('Add'),
           ),
@@ -115,7 +150,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                 Text('Addr: ${customer.address}'),
                 Text('Notes: ${customer.notes}'),
                 Text('Rate: ${customer.rate}'),
-                ],
+              ],
             ),
           ),
         ),

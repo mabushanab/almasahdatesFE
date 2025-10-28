@@ -17,7 +17,7 @@ class _MerchantListScreenState extends State<MerchantListScreen> {
   final _merchantAddress = TextEditingController();
   final _merchantMobileNumber = TextEditingController();
   final _merchantNotes = TextEditingController();
-  // final _merchantRate = TextEditingController();
+  final _formKey = GlobalKey<FormState>(); // Key to access the Form
 
   @override
   void initState() {
@@ -25,6 +25,10 @@ class _MerchantListScreenState extends State<MerchantListScreen> {
 
     // ✅ Load merchants once when the screen opens
     Future.microtask(() => context.read<MerchantProvider>().loadMerchants());
+  }
+
+  bool _validateAddingItem() {
+    return (_formKey.currentState!.validate());
   }
 
   // List merchants =;
@@ -50,30 +54,50 @@ class _MerchantListScreenState extends State<MerchantListScreen> {
             maxHeight: 400, // prevent infinite height
           ),
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _merchantName,
-                  decoration: const InputDecoration(labelText: 'Name'),
-                ),
-                TextField(
-                  controller: _merchantType,
-                  decoration: const InputDecoration(labelText: 'Type'),
-                ),
-                TextField(
-                  controller: _merchantMobileNumber,
-                  decoration: const InputDecoration(labelText: 'Mobile Number'),
-                ),
-                TextField(
-                  controller: _merchantAddress,
-                  decoration: const InputDecoration(labelText: 'Address'),
-                ),
-                                TextField(
-                  controller: _merchantNotes,
-                  decoration: const InputDecoration(labelText: 'Notes'),
-                ),
-              ],
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: _merchantName,
+                    decoration: const InputDecoration(labelText: 'Name'),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Name is required";
+                      }
+                    },
+                  ),
+                  TextFormField(
+                    controller: _merchantType,
+                    decoration: const InputDecoration(labelText: 'Type'),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Type is required";
+                      }
+                    },
+                  ),
+                  TextField(
+                    controller: _merchantMobileNumber,
+                    decoration: const InputDecoration(
+                      labelText: 'Mobile Number',
+                    ),
+                  ),
+                  TextFormField(
+                    controller: _merchantAddress,
+                    decoration: const InputDecoration(labelText: 'Address'),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Address is required";
+                      }
+                    },
+                  ),
+                  TextField(
+                    controller: _merchantNotes,
+                    decoration: const InputDecoration(labelText: 'Notes'),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -81,8 +105,18 @@ class _MerchantListScreenState extends State<MerchantListScreen> {
         actions: [
           ElevatedButton(
             onPressed: () {
-              _addMerchant(Merchant(name: _merchantName.text, type: _merchantType.text,address: _merchantAddress.text, mobileNumber: _merchantMobileNumber.text,notes: _merchantNotes.text));
-              Navigator.pop(context); // close popup
+              if (_validateAddingItem()) {
+                _addMerchant(
+                  Merchant(
+                    name: _merchantName.text,
+                    type: _merchantType.text,
+                    address: _merchantAddress.text,
+                    mobileNumber: _merchantMobileNumber.text,
+                    notes: _merchantNotes.text,
+                  ),
+                );
+                Navigator.pop(context);
+              } // close popup
             },
             child: const Text('Add'),
           ),
@@ -114,7 +148,7 @@ class _MerchantListScreenState extends State<MerchantListScreen> {
                 Text('Addr: ${merchant.address}'),
                 Text('Notes: ${merchant.notes}'),
                 Text('Rate: ${merchant.rate}'),
-                ],
+              ],
             ),
           ),
         ),

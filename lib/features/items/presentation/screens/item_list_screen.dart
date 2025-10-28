@@ -16,12 +16,19 @@ class _ItemListScreenState extends State<ItemListScreen> {
   final _itemType = TextEditingController();
   final _itemSubType = TextEditingController();
   final _itemdescr = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>(); // Key to access the Form
+
   @override
   void initState() {
     super.initState();
 
     // ✅ Load items once when the screen opens
     Future.microtask(() => context.read<ItemProvider>().loadItems());
+  }
+
+  bool _validateAddingItem() {
+    return (_formKey.currentState!.validate());
   }
 
   // List items =;
@@ -47,26 +54,39 @@ class _ItemListScreenState extends State<ItemListScreen> {
             maxHeight: 400, // prevent infinite height
           ),
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _itemName,
-                  decoration: const InputDecoration(labelText: 'Name'),
-                ),
-                TextField(
-                  controller: _itemType,
-                  decoration: const InputDecoration(labelText: 'Type'),
-                ),
-                TextField(
-                  controller: _itemSubType,
-                  decoration: const InputDecoration(labelText: 'SubType'),
-                ),
-                TextField(
-                  controller: _itemdescr,
-                  decoration: const InputDecoration(labelText: 'Description'),
-                ),
-              ],
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: _itemName,
+                    decoration: const InputDecoration(labelText: 'Name'),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Name is required";
+                      }
+                    },
+                  ),
+                  TextFormField(
+                    controller: _itemType,
+                    decoration: const InputDecoration(labelText: 'Type'),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Type is required";
+                      }
+                    },
+                  ),
+                  TextField(
+                    controller: _itemSubType,
+                    decoration: const InputDecoration(labelText: 'SubType'),
+                  ),
+                  TextField(
+                    controller: _itemdescr,
+                    decoration: const InputDecoration(labelText: 'Description'),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -74,8 +94,10 @@ class _ItemListScreenState extends State<ItemListScreen> {
         actions: [
           ElevatedButton(
             onPressed: () {
-              _addItem(Item(name: _itemName.text, type: _itemType.text));
-              Navigator.pop(context); // close popup
+              if (_validateAddingItem()) {
+                _addItem(Item(name: _itemName.text, type: _itemType.text));
+                Navigator.pop(context);
+              }
             },
             child: const Text('Add'),
           ),
@@ -103,7 +125,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
               children: [
                 Text('Name: ' + item.name),
                 Text('Type: ' + item.type),
-                ],
+              ],
             ),
           ),
         ),
@@ -127,7 +149,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-           Text('Items', style: TextStyle()),
+            Text('Items', style: TextStyle()),
             Spacer(),
             IconButton(onPressed: _refresh, icon: Icon(Icons.refresh)),
             IconButton(

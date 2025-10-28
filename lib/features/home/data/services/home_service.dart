@@ -8,36 +8,11 @@ class HomeService {
   final storage = const FlutterSecureStorage();
 
   Future<bool> register(String username, String password) async {
-    final url = Uri.parse('$baseUrl/home/register');
-    final response = await http.post(
+    final url = Uri.parse('$baseUrl/home/CDD');
+    final response = await http.get(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'username': username, 'password': password}),
     );
     return response.statusCode == 200;
-  }
-
-  Future<bool> login(String username, String password) async {
-    final url = Uri.parse('$baseUrl/home/login');
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'username': username, 'password': password}),
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      await storage.write(key: 'token', value: data['token']);
-      return true;
-    }
-    return false;
-  }
-
-  Future<String?> getToken() async {
-    return await storage.read(key: 'token');
-  }
-
-  Future<void> logout() async {
-    await storage.delete(key: 'token');
   }
 }
