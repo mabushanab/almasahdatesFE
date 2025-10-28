@@ -48,15 +48,41 @@ class _LandingPageState extends State<LandingPage> {
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             children: [
-                              Icon(
-                                Icons.attach_money_rounded,
+                              Text(
+                                'مبلغ الدين',
+                                style: TextStyle(
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * .032,
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Icons.attach_money_rounded,
+                                    color: Color.fromARGB(255, 255, 0, 0),
+                                    size:
+                                        MediaQuery.of(context).size.width * .05,
+                                    // weight: 300,
+                                  ),
+                                  Text('${provider.home.sumPORemain}'),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
 
-                                size: MediaQuery.of(context).size.width * .05,
-                                // weight: 300,
+                                children: [
+                                  Icon(
+                                    Icons.attach_money_rounded,
+                                    color: Color.fromARGB(255, 0, 134, 29),
+                                    size:
+                                        MediaQuery.of(context).size.width * .05,
+                                    // weight: 300,
+                                  ),
+                                  Text('${provider.home.sumSORemain}'),
+                                ],
                               ),
                               // Text('Balance'),
-                              Text('Credit:${provider.home.sumPO}'),
-                              Text('Debit: ${provider.home.sumSO}'),
                             ],
                           ),
                         ),
@@ -69,15 +95,41 @@ class _LandingPageState extends State<LandingPage> {
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             children: [
-                              Icon(
-                                Icons.attach_money_rounded,
+                              Text(
+                                'المبلغ الإحاملي',
+                                style: TextStyle(
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * .032,
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Icons.attach_money_rounded,
+                                    color: Color.fromARGB(255, 255, 0, 0),
+                                    size:
+                                        MediaQuery.of(context).size.width * .05,
+                                    // weight: 300,
+                                  ),
+                                  Text('${provider.home.sumPO}'),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
 
-                                size: MediaQuery.of(context).size.width * .05,
-                                // weight: 300,
+                                children: [
+                                  Icon(
+                                    Icons.attach_money_rounded,
+                                    color: Color.fromARGB(255, 0, 134, 29),
+                                    size:
+                                        MediaQuery.of(context).size.width * .05,
+                                    // weight: 300,
+                                  ),
+                                  Text('${provider.home.sumSO}'),
+                                ],
                               ),
                               // Text('Balance'),
-                              Text('Credit: 500'),
-                              Text('Debit: -200'),
                             ],
                           ),
                         ),
@@ -90,36 +142,28 @@ class _LandingPageState extends State<LandingPage> {
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             children: [
-                              Icon(
-                                Icons.attach_money_rounded,
-
-                                size: MediaQuery.of(context).size.width * .05,
-                                // weight: 300,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'المستودع',
+                                    style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                          .032,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.store_mall_directory_rounded,
+                                    color: Color.fromARGB(255, 255, 0, 0),
+                                    size:
+                                        MediaQuery.of(context).size.width * .05,
+                                    // weight: 300,
+                                  ),
+                                ],
                               ),
+                              Row(children: [Text('${provider.home.sumPO}')]),
                               // Text('Balance'),
-                              Text('Credit: 500'),
-                              Text('Debit: -200'),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () => {},
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.store_mall_directory_rounded,
-
-                                size: MediaQuery.of(context).size.width * .05,
-                                // weight: 300,
-                              ),
-                              // Text('Balance'),
-                              Text('3 items need to filled'),
-                              Text(''),
                             ],
                           ),
                         ),
@@ -275,142 +319,6 @@ class _LandingPageState extends State<LandingPage> {
                         // Text(data)
                         Text('Items'),
                       ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsetsGeometry.directional(
-                bottom: MediaQuery.of(context).size.height * .05,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              // spacing: MediaQuery.of(context).size.width * .25,
-              children: [
-                Flexible(
-                  child: TextButton(
-                    onPressed: () {
-                      // MyHomePage hp = MyHomePage();
-                      widget.onMenuSelect(4);
-                    },
-                    child: Card(
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.people,
-                            size: MediaQuery.of(context).size.width * .25,
-                            // weight: 300,
-                          ),
-                          // Text(data)
-                          Text('+ Merchants'),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Flexible(
-                  child: TextButton(
-                    onPressed: () => {},
-                    child: Card(
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.shopping_bag,
-                            size: MediaQuery.of(context).size.width * .25,
-                            // semanticLabel: 'Customers',
-                          ),
-                          // Text(data)
-                          Text('Customers'),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Flexible(
-                  child: TextButton(
-                    onPressed: () => {},
-                    child: Card(
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.category,
-                            size: MediaQuery.of(context).size.width * .25,
-                            // semanticLabel: 'Merchants',
-                          ),
-                          // Text(data)
-                          Text('Items'),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsetsGeometry.directional(
-                bottom: MediaQuery.of(context).size.height * .05,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              // spacing: MediaQuery.of(context).size.width * .25,
-              children: [
-                Flexible(
-                  child: TextButton(
-                    onPressed: () {
-                      // MyHomePage hp = MyHomePage();
-                      widget.onMenuSelect(4);
-                    },
-                    child: Card(
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.people,
-                            size: MediaQuery.of(context).size.width * .25,
-                            // weight: 300,
-                          ),
-                          // Text(data)
-                          Text('+ Merchants'),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Flexible(
-                  child: TextButton(
-                    onPressed: () => {},
-                    child: Card(
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.shopping_bag,
-                            size: MediaQuery.of(context).size.width * .25,
-                            // semanticLabel: 'Customers',
-                          ),
-                          // Text(data)
-                          Text('Customers'),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Flexible(
-                  child: TextButton(
-                    onPressed: () => {},
-                    child: Card(
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.category,
-                            size: MediaQuery.of(context).size.width * .25,
-                            // semanticLabel: 'Merchants',
-                          ),
-                          // Text(data)
-                          Text('Items'),
-                        ],
-                      ),
                     ),
                   ),
                 ),

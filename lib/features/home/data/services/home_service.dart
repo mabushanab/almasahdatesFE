@@ -22,8 +22,8 @@ class HomeService {
     );
 
     if (response.statusCode == 200) {
-      final dynamic data = jsonDecode(response.body);
-      return data.map((json) => Home.fromJson(json)).toList();
+    final dynamic data = jsonDecode(response.body);
+          return Home.fromJson(data);
     } else {
       throw Exception('Failed to load homes');
     }
