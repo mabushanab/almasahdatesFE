@@ -52,7 +52,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final style = theme.textTheme.displayMedium!.copyWith(
-      color: theme.colorScheme.onPrimary,
+      color: theme.colorScheme.primary,
     );
     return Scaffold(
       body: Padding(
@@ -60,13 +60,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Card(
-              color: Colors.lightBlueAccent,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text('Registration Page',style: style),
-              ),
+            Image.asset(
+              'lib/core/assets/darkGreenLogo.png',
+              width: 120,
+              height: 120,
+              fit: BoxFit.cover,
             ),
+            const SizedBox(height: 12),
+            Text('Registration Page', style: style),
             TextField(
               controller: _usernameController,
               decoration: const InputDecoration(labelText: 'Username'),

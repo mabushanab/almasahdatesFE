@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => HomeProvider()),
       ],
       child: MaterialApp(
-        title: 'Namer App',
+        title: 'Almasah Dates | تمور الماسة',
           // scaffoldBackgroundColor: Colors.lightBlueAccent.shade100,
 //         theme: ThemeData(
 //           colorScheme: ColorScheme.fromSeed(
