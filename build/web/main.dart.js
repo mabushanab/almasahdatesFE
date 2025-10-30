@@ -40507,7 +40507,7 @@ A.hM.prototype={
 on(a,b,c){return this.amY(0,b,c)},
 amY(a,b,c){var s=0,r=A.K(t.y),q,p,o,n
 var $async$on=A.G(function(d,e){if(d===1)return A.H(e,r)
-while(true)switch(s){case 0:p=A.cG("https://almasahdates.com/api/auth/register")
+while(true)switch(s){case 0:p=A.cG("http://178.128.162.165/api/auth/register")
 o=t.N
 n=A.a8(["Content-Type","application/json"],o,o)
 s=3
@@ -40520,7 +40520,7 @@ return A.J($async$on,r)},
 uy(a,b){return this.al8(a,b)},
 al8(a,b){var s=0,r=A.K(t.y),q,p,o,n,m
 var $async$uy=A.G(function(c,d){if(c===1)return A.H(d,r)
-while(true)switch(s){case 0:p=A.cG("https://almasahdates.com/api/auth/login")
+while(true)switch(s){case 0:p=A.cG("http://178.128.162.165/api/auth/login")
 o=t.N
 n=A.a8(["Content-Type","application/json"],o,o)
 s=3
@@ -40695,7 +40695,7 @@ ahE(a){var s=0,r=A.K(t.H),q=this,p,o,n,m,l,k,j,i,h
 var $async$fP=A.G(function(b,c){if(b===1)return A.H(c,r)
 while(true)switch(s){case 0:p=t.N
 n=A
-m=A.cG("https://almasahdates.com/api/customer/"+a)
+m=A.cG("http://178.128.162.165/api/customer/"+a)
 l=A
 k="Content-Type"
 j="application/json"
@@ -40716,7 +40716,7 @@ return A.D(p.a.em(),$async$tV)
 case 3:m=b
 l=t.N
 s=4
-return A.D(A.He(A.cG("https://almasahdates.com/api/customer/list"),A.a8(["Content-Type","application/json","Authorization","Bearer "+A.k(m)],l,l)),$async$tV)
+return A.D(A.He(A.cG("http://178.128.162.165/api/customer/list"),A.a8(["Content-Type","application/json","Authorization","Bearer "+A.k(m)],l,l)),$async$tV)
 case 4:k=b
 if(k.b===200){l=k.e
 o=A.ew(A.ev(l))
@@ -40732,7 +40732,7 @@ return A.J($async$tV,r)},
 fH(a){return this.aeK(a)},
 aeK(a){var s=0,r=A.K(t.H),q=this,p,o,n,m,l,k,j
 var $async$fH=A.G(function(b,c){if(b===1)return A.H(c,r)
-while(true)switch(s){case 0:n=A.cG("https://almasahdates.com/api/customer/create")
+while(true)switch(s){case 0:n=A.cG("http://178.128.162.165/api/customer/create")
 s=2
 return A.D(q.a.em(),$async$fH)
 case 2:m=c
@@ -40908,7 +40908,7 @@ return A.D(p.b.em(),$async$tW)
 case 3:o=b
 n=t.N
 s=4
-return A.D(A.He(A.cG("https://almasahdates.com/api/home/CDD"),A.a8(["Content-Type","application/json","Authorization","Bearer "+A.k(o)],n,n)),$async$tW)
+return A.D(A.He(A.cG("http://178.128.162.165/api/home/CDD"),A.a8(["Content-Type","application/json","Authorization","Bearer "+A.k(o)],n,n)),$async$tW)
 case 4:m=b
 if(m.b===200){q=A.aKO(B.an.m3(0,A.ew(A.ev(m.e)).cd(0,m.w),null))
 s=1
@@ -41085,7 +41085,7 @@ ahH(a){var s=0,r=A.K(t.H),q=this,p,o,n,m,l,k,j,i,h
 var $async$fQ=A.G(function(b,c){if(b===1)return A.H(c,r)
 while(true)switch(s){case 0:p=t.N
 n=A
-m=A.cG("https://almasahdates.com/api/item/"+a)
+m=A.cG("http://178.128.162.165/api/item/"+a)
 l=A
 k="Content-Type"
 j="application/json"
@@ -41106,7 +41106,7 @@ return A.D(p.a.em(),$async$tX)
 case 3:o=b
 n=t.N
 s=4
-return A.D(A.He(A.cG("https://almasahdates.com/api/item/list"),A.a8(["Content-Type","application/json","Authorization","Bearer "+A.k(o)],n,n)),$async$tX)
+return A.D(A.He(A.cG("http://178.128.162.165/api/item/list"),A.a8(["Content-Type","application/json","Authorization","Bearer "+A.k(o)],n,n)),$async$tX)
 case 4:m=b
 if(m.b===200){n=J.ez(B.an.m3(0,A.ew(A.ev(m.e)).cd(0,m.w),null),new A.a64(),t.LN)
 n=A.a3(n,n.$ti.i("ao.E"))
@@ -41118,7 +41118,7 @@ return A.J($async$tX,r)},
 fI(a){return this.aeP(a)},
 aeP(a){var s=0,r=A.K(t.H),q=this,p,o,n,m,l,k,j
 var $async$fI=A.G(function(b,c){if(b===1)return A.H(c,r)
-while(true)switch(s){case 0:n=A.cG("https://almasahdates.com/api/item/create")
+while(true)switch(s){case 0:n=A.cG("http://178.128.162.165/api/item/create")
 s=2
 return A.D(q.a.em(),$async$fI)
 case 2:m=c
@@ -41296,7 +41296,7 @@ ahK(a){var s=0,r=A.K(t.H),q=this,p,o,n,m,l,k,j,i,h
 var $async$fR=A.G(function(b,c){if(b===1)return A.H(c,r)
 while(true)switch(s){case 0:p=t.N
 n=A
-m=A.cG("https://almasahdates.com/api/merchant/"+a)
+m=A.cG("http://178.128.162.165/api/merchant/"+a)
 l=A
 k="Content-Type"
 j="application/json"
@@ -41317,7 +41317,7 @@ return A.D(p.a.em(),$async$tY)
 case 3:m=b
 l=t.N
 s=4
-return A.D(A.He(A.cG("https://almasahdates.com/api/merchant/list"),A.a8(["Content-Type","application/json","Authorization","Bearer "+A.k(m)],l,l)),$async$tY)
+return A.D(A.He(A.cG("http://178.128.162.165/api/merchant/list"),A.a8(["Content-Type","application/json","Authorization","Bearer "+A.k(m)],l,l)),$async$tY)
 case 4:k=b
 if(k.b===200){l=k.e
 o=A.ew(A.ev(l))
@@ -41333,7 +41333,7 @@ return A.J($async$tY,r)},
 fJ(a){return this.aeU(a)},
 aeU(a){var s=0,r=A.K(t.H),q=this,p,o,n,m,l,k,j
 var $async$fJ=A.G(function(b,c){if(b===1)return A.H(c,r)
-while(true)switch(s){case 0:n=A.cG("https://almasahdates.com/api/merchant/create")
+while(true)switch(s){case 0:n=A.cG("http://178.128.162.165/api/merchant/create")
 s=2
 return A.D(q.a.em(),$async$fJ)
 case 2:m=c
@@ -41525,7 +41525,7 @@ ahN(a){var s=0,r=A.K(t.H),q=this,p,o,n,m,l,k,j,i,h
 var $async$fS=A.G(function(b,c){if(b===1)return A.H(c,r)
 while(true)switch(s){case 0:p=t.N
 n=A
-m=A.cG("https://almasahdates.com/api/purchaseOrder/"+a)
+m=A.cG("http://178.128.162.165/api/purchaseOrder/"+a)
 l=A
 k="Content-Type"
 j="application/json"
@@ -41546,7 +41546,7 @@ return A.D(p.a.em(),$async$tZ)
 case 3:o=b
 n=t.N
 s=4
-return A.D(A.He(A.cG("https://almasahdates.com/api/purchaseOrder/list"),A.a8(["Content-Type","application/json","Authorization","Bearer "+A.k(o)],n,n)),$async$tZ)
+return A.D(A.He(A.cG("http://178.128.162.165/api/purchaseOrder/list"),A.a8(["Content-Type","application/json","Authorization","Bearer "+A.k(o)],n,n)),$async$tZ)
 case 4:m=b
 if(m.b===200){n=J.ez(B.an.m3(0,A.ew(A.ev(m.e)).cd(0,m.w),null),new A.abU(),t.YU)
 n=A.a3(n,n.$ti.i("ao.E"))
@@ -41558,7 +41558,7 @@ return A.J($async$tZ,r)},
 fK(a){return this.aeZ(a)},
 aeZ(a){var s=0,r=A.K(t.H),q=this,p,o,n,m,l,k,j,i
 var $async$fK=A.G(function(b,c){if(b===1)return A.H(c,r)
-while(true)switch(s){case 0:o=A.cG("https://almasahdates.com/api/purchaseOrder/create")
+while(true)switch(s){case 0:o=A.cG("http://178.128.162.165/api/purchaseOrder/create")
 n=t.N
 m=A
 l="Content-Type"
@@ -41872,7 +41872,7 @@ ahQ(a){var s=0,r=A.K(t.H),q=this,p,o,n,m,l,k,j,i,h
 var $async$fT=A.G(function(b,c){if(b===1)return A.H(c,r)
 while(true)switch(s){case 0:p=t.N
 n=A
-m=A.cG("https://almasahdates.com/api/saleOrder/"+a)
+m=A.cG("http://178.128.162.165/api/saleOrder/"+a)
 l=A
 k="Content-Type"
 j="application/json"
@@ -41893,7 +41893,7 @@ return A.D(p.a.em(),$async$u_)
 case 3:o=b
 n=t.N
 s=4
-return A.D(A.He(A.cG("https://almasahdates.com/api/saleOrder/list"),A.a8(["Content-Type","application/json","Authorization","Bearer "+A.k(o)],n,n)),$async$u_)
+return A.D(A.He(A.cG("http://178.128.162.165/api/saleOrder/list"),A.a8(["Content-Type","application/json","Authorization","Bearer "+A.k(o)],n,n)),$async$u_)
 case 4:m=b
 if(m.b===200){n=J.ez(B.an.m3(0,A.ew(A.ev(m.e)).cd(0,m.w),null),new A.adD(),t.zu)
 n=A.a3(n,n.$ti.i("ao.E"))
@@ -41905,7 +41905,7 @@ return A.J($async$u_,r)},
 fL(a){return this.af1(a)},
 af1(a){var s=0,r=A.K(t.H),q=this,p,o,n,m,l,k,j,i
 var $async$fL=A.G(function(b,c){if(b===1)return A.H(c,r)
-while(true)switch(s){case 0:o=A.cG("https://almasahdates.com/api/saleOrder/create")
+while(true)switch(s){case 0:o=A.cG("http://178.128.162.165/api/saleOrder/create")
 n=t.N
 m=A
 l="Content-Type"
