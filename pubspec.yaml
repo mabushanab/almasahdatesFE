@@ -8,6 +8,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  dio: ^5.9.0       # for HTTP requests
+  path_provider: ^2.0.5  # to get local storage paths
+  open_filex: ^4.2.1  # to open files
   http: ^1.2.0
   flutter_secure_storage: ^9.0.0
   cupertino_icons: ^1.0.8

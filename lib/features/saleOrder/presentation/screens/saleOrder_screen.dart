@@ -26,6 +26,7 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
   int i = 0;
   final _formKey = GlobalKey<FormState>(); // Key to access the Form
   final _formKey1 = GlobalKey<FormState>(); // Key to access the Form
+  double sum = 0;
 
   @override
   void initState() {
@@ -52,8 +53,8 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
     await context.read<SaleOrderProvider>().addSaleOrder(saleOrder);
   }
 
-  Future<void> _delete(SaleOrder saleOrder) async {
-    await context.read<SaleOrderProvider>().deleteSaleOrder(saleOrder);
+  Future<void> _getInvoice(String name) async {
+    await context.read<SaleOrderProvider>().getInvoice(name);
   }
 
   Future<dynamic> _addSaleOrderDialog(
@@ -69,6 +70,8 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
     _remainAmount.clear();
     _totalPrice.clear();
     i = 0;
+    sum = 0;
+
     return showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -149,6 +152,9 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                           onPressed: () {
                             setState(() {
                               product.remove(g);
+                              sum -= (g.priceForItem * g.quantity);
+                              _totalPrice.text = ((sum * 100).round() / 100)
+                                  .toString();
                             });
                           },
                         ),
@@ -286,6 +292,8 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                 if (_validateAddingItem()) {
                   parentSetState(() {
                     product.add(g);
+                    sum += (g.priceForItem * g.quantity);
+                    _totalPrice.text = ((sum * 100).round() / 100).toString();
                   });
                   Navigator.pop(context);
                 }
@@ -417,9 +425,13 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                     flex: 2,
                     child: Text('${provider.saleOrders[i].remainAmount}'),
                   ),
+                  Expanded(
+                    flex: 2,
+                    child: Text(provider.saleOrders[i].sOId ?? ''),
+                  ),
                   IconButton(
-                    onPressed: () => _delete(provider.saleOrders[i]),
-                    icon: const Icon(Icons.delete, color: Colors.redAccent),
+                    onPressed: () => _getInvoice(provider.saleOrders[i].sOId!),
+                    icon: const Icon(Icons.file_download, color: Color.fromARGB(255, 45, 143, 36)),
                   ),
                 ],
               ),

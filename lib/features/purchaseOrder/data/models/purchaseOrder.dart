@@ -2,6 +2,7 @@
 import 'package:almasah_dates/features/purchaseOrder/data/models/goods.dart';
 
 class PurchaseOrder {
+  String? pOId;
   final String merchantName;
   List<Goods> goods;
   final String? date;
@@ -10,6 +11,7 @@ class PurchaseOrder {
   String? notes;
 
   PurchaseOrder({
+    this.pOId,
     required this.merchantName,
     required this.goods,
     this.date,
@@ -19,22 +21,23 @@ class PurchaseOrder {
   });
 
   factory PurchaseOrder.fromJson(Map<String, dynamic> json) => PurchaseOrder(
+    pOId: json['poid'],
     merchantName: json['merchantName'],
-    goods: (json['goods'] as List<dynamic>).map((g) => Goods.fromJson(g)).toList() ,
+    goods: (json['goods'] as List<dynamic>)
+        .map((g) => Goods.fromJson(g))
+        .toList(),
     date: json['date'],
     totalPrice: json['totalPrice'],
     remainAmount: json['remainAmount'],
     notes: json['notes'],
-
   );
-   Map<String, dynamic> toJson() => {
-        'merchantName': merchantName,
-        'goods': goods.map((g) => g.toJson()).toList(),
-        'date': date,
-        'totalPrice': totalPrice,
-        'remainAmount': remainAmount,
-        'notes': notes,
-
-      };
-
+  Map<String, dynamic> toJson() => {
+    'poid': pOId,
+    'merchantName': merchantName,
+    'goods': goods.map((g) => g.toJson()).toList(),
+    'date': date,
+    'totalPrice': totalPrice,
+    'remainAmount': remainAmount,
+    'notes': notes,
+  };
 }

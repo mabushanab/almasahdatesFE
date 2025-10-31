@@ -23,5 +23,8 @@ class SaleOrderRepository {
     return await _service.deleteSaleOrder(name);
 
   }
+  Future<void> getInvoice(String name) async {
+    return await _service.getInvoice(name);
 
+  }
 }

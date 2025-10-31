@@ -1,4 +1,4 @@
-package com.example.Almasah Dates | تمور الماسة
+package com.example.AlmasahDates
 
 import io.flutter.embedding.android.FlutterActivity
 

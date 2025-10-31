@@ -26,6 +26,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
   int i = 0;
   final _formKey = GlobalKey<FormState>(); // Key to access the Form
   final _formKey1 = GlobalKey<FormState>(); // Key to access the Form
+  double sum = 0;
 
   @override
   void initState() {
@@ -74,6 +75,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
     selectedMerchant = null;
     _remainAmount.clear();
     _totalPrice.clear();
+    sum = 0;
     i = 0;
     return showDialog(
       context: context,
@@ -145,7 +147,6 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                         _showItemDialog(context, itemProvider, setState);
                       },
                     ),
-                    ...goodsWidgets,
                     ...goods.map(
                       (g) => ListTile(
                         title: Text(g.itemName),
@@ -157,6 +158,9 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                           onPressed: () {
                             setState(() {
                               goods.remove(g);
+                              sum -= (g.priceForGrams * g.weightInGrams);
+                              _totalPrice.text = ((sum * 100).round() / 100)
+                                  .toString();
                             });
                           },
                         ),
@@ -282,6 +286,8 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                 if (_validateAddingItem()) {
                   parentSetState(() {
                     goods.add(g);
+                    sum += g.priceForGrams * g.weightInGrams;
+                    _totalPrice.text = ((sum * 100).round() / 100).toString();
                   });
                   Navigator.pop(context);
                 }

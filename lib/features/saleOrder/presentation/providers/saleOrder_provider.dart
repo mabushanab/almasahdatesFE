@@ -35,7 +35,17 @@ class SaleOrderProvider extends ChangeNotifier {
     notifyListeners();
 
     await _repo.deleteSaleOrder(saleOrder.customerName);
-    // await _repo.getSaleOrders();
+    loadSaleOrders();
+
+    isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> getInvoice(String name) async {
+    isLoading = true;
+    notifyListeners();
+
+    await _repo.getInvoice(name);
     loadSaleOrders();
 
     isLoading = false;

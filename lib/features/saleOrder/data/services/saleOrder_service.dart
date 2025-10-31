@@ -1,9 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:almasah_dates/core/constants/api_urls.dart';
 import 'package:almasah_dates/features/auth/data/services/auth_service.dart';
 import 'package:almasah_dates/features/saleOrder/data/models/saleOrder.dart';
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
 
 class SaleOrderService {
   final _authService = AuthService();
@@ -19,7 +23,6 @@ class SaleOrderService {
       },
     );
     print(response.body);
-    // return jsonDecode(response.body);
   }
 
   Future<List<SaleOrder>> fetchSaleOrders() async {
@@ -53,30 +56,38 @@ class SaleOrderService {
       body: jsonEncode(saleOrder.toJson()),
     );
     print(response.body);
-    // return jsonDecode(response.body);
+  }
+
+  Future<void> getInvoice(String sOId) async {
+    final url = '$baseUrl/saleOrder/invoice';
+    String? token = await _authService.getToken();
+    try {
+      Dio dio = Dio();
+
+      final response = await dio.get<List<int>>(
+        url,
+        queryParameters: {'sOId': sOId},
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          responseType: ResponseType.bytes,
+        ),
+      );
+
+
+      final dir = await getTemporaryDirectory();
+      final file = File('${dir.path}/invoice_$sOId.pdf');
+
+      await file.writeAsBytes(response.data!);
+
+      await OpenFilex.open(file.path);
+
+      print('PDF downloaded and opened successfully!');
+    } catch (e) {
+      print('Error downloading invoice: $e');
+
+    }
   }
 }
-
-
-
-  // Future<List> list() async {
-  //   final url = Uri.parse('$baseUrl/list');
-  //   final response = await http.get(
-  //     url,
-  //     headers: {'Content-Type': 'application/json'},
-  //   );
-  //   return jsonDecode(response.body);
-  // }
-
-  // Future<List> item(String name) async {
-  //   final url = Uri.parse('$baseUrl/$name');
-  //   Future<String?> token = _authService.getToken();
-  //   final response = await http.get(
-  //     url,
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': 'Bearer $token',
-  //     },
-  //   );
-  //   return jsonDecode(response.body);
-  // }
