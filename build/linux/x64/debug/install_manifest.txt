@@ -5,10 +5,12 @@
 /home/mosab/dev/almasahdatesFE/build/linux/x64/debug/bundle/data/flutter_assets/FontManifest.json
 /home/mosab/dev/almasahdatesFE/build/linux/x64/debug/bundle/data/flutter_assets/NOTICES.Z
 /home/mosab/dev/almasahdatesFE/build/linux/x64/debug/bundle/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+/home/mosab/dev/almasahdatesFE/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.bin.json
 /home/mosab/dev/almasahdatesFE/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.bin
 /home/mosab/dev/almasahdatesFE/build/linux/x64/debug/bundle/data/flutter_assets/version.json
 /home/mosab/dev/almasahdatesFE/build/linux/x64/debug/bundle/data/flutter_assets/kernel_blob.bin
 /home/mosab/dev/almasahdatesFE/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.json
+/home/mosab/dev/almasahdatesFE/build/linux/x64/debug/bundle/data/flutter_assets/NOTICES
 /home/mosab/dev/almasahdatesFE/build/linux/x64/debug/bundle/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
 /home/mosab/dev/almasahdatesFE/build/linux/x64/debug/bundle/data/flutter_assets/NativeAssetsManifest.json
 /home/mosab/dev/almasahdatesFE/build/linux/x64/debug/bundle/data/flutter_assets/shaders/ink_sparkle.frag

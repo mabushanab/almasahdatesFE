@@ -18,6 +18,8 @@ class SaleOrderListScreen extends StatefulWidget {
 class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
   final _totalPrice = TextEditingController();
   final _remainAmount = TextEditingController();
+  final _priceForItem = TextEditingController();
+
   // final _quantity = TextEditingController();
   Customer? selectedCustomer;
   Item? selectedItem;
@@ -47,6 +49,12 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
 
   Future<void> _refresh() async {
     await context.read<SaleOrderProvider>().loadSaleOrders();
+  }
+
+  Future<String> _getMaxProductPrice(String goodsName) async {
+    return await context.read<SaleOrderProvider>().getMaxProductPrice(
+      goodsName,
+    );
   }
 
   Future<void> _addSaleOrder(SaleOrder saleOrder) async {
@@ -113,6 +121,7 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                       ],
                     ),
                     TextFormField(
+                      readOnly: true,
                       controller: _totalPrice,
                       decoration: const InputDecoration(
                         labelText: 'Total Price: ',
@@ -204,6 +213,7 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
       quantity: 0,
       boxCost: 0,
     );
+    _priceForItem.clear();
     selectedItem = null;
     return showDialog(
       context: context,
@@ -231,9 +241,13 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                                 ),
                               )
                               .toList(),
-                          onChanged: (m) => {
+                          onChanged: (m) async => {
                             setState(() => selectedItem = m),
                             g.itemName = selectedItem!.name,
+                            _priceForItem.text = await _getMaxProductPrice(
+                              g.itemName,
+                            ),
+                            g.priceForItem = double.parse(_priceForItem.text),
                           },
                           validator: (value) {
                             if (value == null) {
@@ -246,6 +260,7 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                     ],
                   ),
                   TextFormField(
+                    controller: _priceForItem,
                     decoration: const InputDecoration(
                       labelText: 'Price for item',
                     ),
@@ -276,9 +291,11 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                     },
                   ),
                   TextField(
-                    decoration: const InputDecoration(labelText: 'box cost'),
-                    onChanged: (value) =>
-                        g.boxCost = double.tryParse(value) ?? 0.0,
+                    decoration: const InputDecoration(labelText: '%Discount'),
+                    onChanged: (value) async => {
+                      g.boxCost = double.tryParse(value) ?? 0.0,
+                      // g.priceForItem = g.priceForItem - (g.priceForItem * g.boxCost)/10,
+                    },
                   ),
                 ],
               ),
@@ -431,7 +448,10 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                   ),
                   IconButton(
                     onPressed: () => _getInvoice(provider.saleOrders[i].sOId!),
-                    icon: const Icon(Icons.file_download, color: Color.fromARGB(255, 45, 143, 36)),
+                    icon: const Icon(
+                      Icons.picture_as_pdf,
+                      color: Color.fromARGB(255, 160, 28, 23),
+                    ),
                   ),
                 ],
               ),

@@ -19,6 +19,8 @@ class PurchaseOrderListScreen extends StatefulWidget {
 class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
   final _totalPrice = TextEditingController();
   final _remainAmount = TextEditingController();
+  final _priceForGram = TextEditingController();
+
   Merchant? selectedMerchant;
   Item? selectedItem;
   List<Widget> goodsWidgets = [];
@@ -49,8 +51,18 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
     return (_formKey1.currentState!.validate());
   }
 
+  Future<void> _getInvoice(String name) async {
+    await context.read<PurchaseOrderProvider>().getInvoice(name);
+  }
+
   Future<void> _refresh() async {
     await context.read<PurchaseOrderProvider>().loadPurchaseOrders();
+  }
+
+  Future<String> _getMinGoodsPrice(String goodsName) async {
+    return await context.read<PurchaseOrderProvider>().getMinGoodsPrice(
+      goodsName,
+    );
   }
 
   Future<void> _addPurchaseOrder(PurchaseOrder purchaseOrder) async {
@@ -119,6 +131,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                       ],
                     ),
                     TextFormField(
+                      readOnly: true,
                       controller: _totalPrice,
                       decoration: const InputDecoration(
                         labelText: 'Total Price: ',
@@ -206,6 +219,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
   ) {
     Goods g = Goods(itemName: 'name', priceForGrams: 0, weightInGrams: 0);
     selectedItem = null;
+    _priceForGram.clear();
     return showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -232,9 +246,13 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                                 ),
                               )
                               .toList(),
-                          onChanged: (m) => {
+                          onChanged: (m) async => {
                             setState(() => selectedItem = m),
                             g.itemName = selectedItem!.name,
+                            _priceForGram.text = await _getMinGoodsPrice(
+                              g.itemName,
+                            ),
+                            g.priceForGrams = double.parse(_priceForGram.text),
                           },
                           validator: (value) {
                             if (value == null) {
@@ -248,6 +266,7 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                   ),
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Price (g)'),
+                    controller: _priceForGram,
                     onChanged: (value) => g.priceForGrams = double.parse(value),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
@@ -424,9 +443,17 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
                     flex: 2,
                     child: Text('${provider.purchaseOrders[i].remainAmount}'),
                   ),
+                  Expanded(
+                    flex: 2,
+                    child: Text('${provider.purchaseOrders[i].pOId}'),
+                  ),
                   IconButton(
-                    onPressed: () => _delete(provider.purchaseOrders[i]),
-                    icon: const Icon(Icons.delete, color: Colors.redAccent),
+                    onPressed: () =>
+                        _getInvoice(provider.purchaseOrders[i].pOId!),
+                    icon: const Icon(
+                      Icons.picture_as_pdf,
+                      color: Color.fromARGB(255, 160, 28, 23),
+                    ),
                   ),
                 ],
               ),

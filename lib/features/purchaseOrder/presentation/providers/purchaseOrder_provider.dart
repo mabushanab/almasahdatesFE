@@ -41,4 +41,27 @@ class PurchaseOrderProvider extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
+    Future<String> getMinGoodsPrice(String goodsName) async {
+    isLoading = true;
+    notifyListeners();
+
+    String s =await _repo.getMinGoodsPrice(goodsName);
+    loadPurchaseOrders();
+
+    isLoading = false;
+    notifyListeners();
+    return s;
+  }
+
+  Future<void> getInvoice(String name) async {
+    isLoading = true;
+    notifyListeners();
+
+    await _repo.getInvoice(name);
+    loadPurchaseOrders();
+
+    isLoading = false;
+    notifyListeners();
+  }
 }

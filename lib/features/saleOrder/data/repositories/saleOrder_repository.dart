@@ -18,6 +18,10 @@ class SaleOrderRepository {
     return await _service.addSaleOrder(saleOrder);
   }
 
+  Future<String> getMaxProductPrice(String goodsName) async {
+
+    return await _service.getMaxProductPrice(goodsName);
+  }
 
   Future<void> deleteSaleOrder(String name) async {
     return await _service.deleteSaleOrder(name);

@@ -1,17 +1,21 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:almasah_dates/core/constants/api_urls.dart';
 import 'package:almasah_dates/features/auth/data/services/auth_service.dart';
 import 'package:almasah_dates/features/saleOrder/data/models/saleOrder.dart';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
-import 'package:open_filex/open_filex.dart';
-import 'package:path_provider/path_provider.dart';
+
+// Conditional import for savePdf
+import 'invoice_stub.dart'
+    if (dart.library.html) 'invoice_web.dart'
+    if (dart.library.io) 'invoice_io.dart';
 
 class SaleOrderService {
   final _authService = AuthService();
 
+  // DELETE SaleOrder
   Future<void> deleteSaleOrder(String name) async {
     final url = Uri.parse('$baseUrl/saleOrder/$name');
     String? token = await _authService.getToken();
@@ -25,6 +29,7 @@ class SaleOrderService {
     print(response.body);
   }
 
+  // FETCH SaleOrders
   Future<List<SaleOrder>> fetchSaleOrders() async {
     String? token = await _authService.getToken();
     final url = Uri.parse('$baseUrl/saleOrder/list');
@@ -44,6 +49,7 @@ class SaleOrderService {
     }
   }
 
+  // ADD SaleOrder
   Future<void> addSaleOrder(SaleOrder saleOrder) async {
     final url = Uri.parse('$baseUrl/saleOrder/create');
     String? token = await _authService.getToken();
@@ -58,9 +64,26 @@ class SaleOrderService {
     print(response.body);
   }
 
+  // GET Max Product Price
+  Future<String> getMaxProductPrice(String productName) async {
+    final url = Uri.parse('$baseUrl/saleOrder/productMinPrice')
+        .replace(queryParameters: {'productName': productName});
+    String? token = await _authService.getToken();
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    return response.body;
+  }
+
+  // GET PDF Invoice (cross-platform)
   Future<void> getInvoice(String sOId) async {
     final url = '$baseUrl/saleOrder/invoice';
     String? token = await _authService.getToken();
+
     try {
       Dio dio = Dio();
 
@@ -76,18 +99,14 @@ class SaleOrderService {
         ),
       );
 
+      final bytes = Uint8List.fromList(response.data!);
 
-      final dir = await getTemporaryDirectory();
-      final file = File('${dir.path}/invoice_$sOId.pdf');
+      // Save or download PDF using platform-specific implementation
+      await savePdf(bytes, 'invoice_$sOId.pdf');
 
-      await file.writeAsBytes(response.data!);
-
-      await OpenFilex.open(file.path);
-
-      print('PDF downloaded and opened successfully!');
+      print('PDF downloaded successfully!');
     } catch (e) {
       print('Error downloading invoice: $e');
-
     }
   }
 }

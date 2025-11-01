@@ -13,14 +13,18 @@ class PurchaseOrderRepository {
   }
 
   Future<void> addPurchaseOrder(PurchaseOrder purchaseOrder) async {
-
     return await _service.addPurchaseOrder(purchaseOrder);
   }
 
-
   Future<void> deletePurchaseOrder(String name) async {
     return await _service.deletePurchaseOrder(name);
-
   }
 
+  Future<String> getMinGoodsPrice(String goodsName) async {
+    return await _service.getMinGoodsPrice(goodsName);
+  }
+
+  Future<void> getInvoice(String name) async {
+    return await _service.getInvoice(name);
+  }
 }
