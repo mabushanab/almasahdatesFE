@@ -1,8 +1,7 @@
-// screens/customer_list_screen.dart
-import 'package:almasah_dates/features/customer/data/models/customer.dart';
-import 'package:almasah_dates/features/customer/presentation/providers/customer_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:almasah_dates/features/customer/data/models/customer.dart';
+import 'package:almasah_dates/features/customer/presentation/providers/customer_provider.dart';
 
 class CustomerListScreen extends StatefulWidget {
   const CustomerListScreen({super.key});
@@ -12,160 +11,121 @@ class CustomerListScreen extends StatefulWidget {
 }
 
 class _CustomerListScreenState extends State<CustomerListScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   final _customerName = TextEditingController();
   final _customerType = TextEditingController();
   final _customerAddress = TextEditingController();
   final _customerMobileNumber = TextEditingController();
   final _customerNotes = TextEditingController();
-  // final _customerRate = TextEditingController();
-  final _formKey = GlobalKey<FormState>(); // Key to access the Form
 
   @override
   void initState() {
     super.initState();
-
-    // ✅ Load customers once when the screen opens
     Future.microtask(() => context.read<CustomerProvider>().loadCustomers());
   }
 
-  bool _validateAddingItem() {
-    return (_formKey.currentState!.validate());
-  }
+  bool _isFormValid() => _formKey.currentState!.validate();
 
-  // List customers =;
-  Future<void> _refresh() async {
-    await context.read<CustomerProvider>().loadCustomers();
-  }
+  Future<void> _refresh() async =>
+      context.read<CustomerProvider>().loadCustomers();
 
-  Future<void> _addCustomer(Customer customer) async {
-    await context.read<CustomerProvider>().addCustomer(customer);
-  }
+  Future<void> _addCustomer(Customer customer) async =>
+      context.read<CustomerProvider>().addCustomer(customer);
 
-  Future<void> _delete(Customer customer) async {
-    await context.read<CustomerProvider>().deleteCustomer(customer);
-  }
+  Future<void> _deleteCustomer(Customer customer) async =>
+      context.read<CustomerProvider>().deleteCustomer(customer);
 
-  Future<dynamic> _addCustomerDialog(BuildContext context) {
-    return showDialog(
+  void _showAddCustomerDialog() {
+    showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Add customer'),
-        content: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxHeight: 400, // prevent infinite height
-          ),
+        title: const Text('Add Customer', style: TextStyle(fontWeight: FontWeight.bold)),
+        content: Form(
+          key: _formKey,
           child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: _customerName,
-                    decoration: const InputDecoration(labelText: 'Name'),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Name is required";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _customerType,
-                    decoration: const InputDecoration(labelText: 'Type'),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Type is required";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextField(
-                    controller: _customerMobileNumber,
-                    decoration: const InputDecoration(
-                      labelText: 'Mobile Number',
-                    ),
-                  ),
-                  TextFormField(
-                    controller: _customerAddress,
-                    decoration: const InputDecoration(labelText: 'Address'),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Adress is required";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextField(
-                    controller: _customerNotes,
-                    decoration: const InputDecoration(labelText: 'Notes'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              if (_validateAddingItem()) {
-                _addCustomer(
-                  Customer(
-                    name: _customerName.text,
-                    type: _customerType.text,
-                    address: _customerAddress.text,
-                    mobileNumber: _customerMobileNumber.text,
-                    notes: _customerNotes.text,
-                  ),
-                );
-                Navigator.pop(context);
-              } // close popup
-            },
-            child: const Text('Add'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context), // close dialog
-            child: const Text('Cancel'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<dynamic> _showCustomerDialog(Customer customer) {
-    return showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Show customer'),
-        content: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxHeight: 400, // prevent infinite height
-          ),
-          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Name: ${customer.name}'),
-                Text('Type: ${customer.type}'),
-                Text('Mobile: ${customer.mobileNumber}'),
-                Text('Addr: ${customer.address}'),
-                Text('Notes: ${customer.notes}'),
-                Text('Rate: ${customer.rate}'),
+                _buildTextField(_customerName, 'Name', validator: true),
+                _buildTextField(_customerType, 'Type', validator: true),
+                _buildTextField(_customerMobileNumber, 'Mobile Number'),
+                _buildTextField(_customerAddress, 'Address', validator: true),
+                _buildTextField(_customerNotes, 'Notes'),
               ],
             ),
           ),
         ),
-
         actions: [
+          ElevatedButton.icon(
+            icon: const Icon(Icons.add),
+            label: const Text('Add'),
+            onPressed: () {
+              if (_isFormValid()) {
+                _addCustomer(Customer(
+                  name: _customerName.text,
+                  type: _customerType.text,
+                  address: _customerAddress.text,
+                  mobileNumber: _customerMobileNumber.text,
+                  notes: _customerNotes.text,
+                ));
+                Navigator.pop(context);
+              }
+            },
+          ),
           TextButton(
-            onPressed: () => Navigator.pop(context), // close dialog
             child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(context),
           ),
         ],
       ),
     );
   }
+
+  Widget _buildTextField(TextEditingController controller, String label, {bool validator = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()),
+        validator: validator
+            ? (value) => (value == null || value.trim().isEmpty) ? '$label is required' : null
+            : null,
+      ),
+    );
+  }
+
+  void _showCustomerDetails(Customer c) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Customer Details'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _detailRow('Name', c.name),
+            _detailRow('Type', c.type),
+            _detailRow('Mobile', c.mobileNumber),
+            _detailRow('Address', c.address),
+            _detailRow('Notes', c.notes),
+            _detailRow('Rate', '${c.rate ?? '-'}'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: const Text('Close'),
+            onPressed: () => Navigator.pop(context),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _detailRow(String title, String? value) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Text('$title: ${value ?? ''}', style: const TextStyle(fontSize: 14)),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -173,49 +133,31 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Customers', style: TextStyle()),
-            Spacer(),
-            IconButton(onPressed: _refresh, icon: Icon(Icons.refresh)),
-            IconButton(
-              onPressed: () {
-                _addCustomerDialog(context);
-              },
-              icon: Icon(Icons.add),
-            ),
-          ],
-        ),
+        title: const Text('Customers'),
+        actions: [
+          IconButton(onPressed: _refresh, icon: const Icon(Icons.refresh)),
+          IconButton(onPressed: _showAddCustomerDialog, icon: const Icon(Icons.add)),
+        ],
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.zero,
-        itemCount: provider.customers.length,
-        itemBuilder: (_, i) => TextButton(
-          onPressed: () => _showCustomerDialog(provider.customers[i]),
-
-          // context);
-          // onPressed: () {
-          // _showCustomerDialog(provider.customers[i],
-          // },
-          child: Card(
-            elevation: 3,
-            margin: const EdgeInsets.symmetric(vertical: 2),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(provider.customers[i].name),
-                const Spacer(),
-                IconButton(
-                  onPressed: () => _delete(provider.customers[i]),
-                  icon: Icon(Icons.delete),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: ListView.builder(
+          itemCount: provider.customers.length,
+          itemBuilder: (_, i) {
+            final c = provider.customers[i];
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              child: ListTile(
+                title: Text(c.name, style: const TextStyle(fontWeight: FontWeight.w500)),
+                subtitle: Text(c.type),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () => _deleteCustomer(c),
                 ),
-              ],
-            ),
-          ),
+                onTap: () => _showCustomerDetails(c),
+              ),
+            );
+          },
         ),
       ),
     );

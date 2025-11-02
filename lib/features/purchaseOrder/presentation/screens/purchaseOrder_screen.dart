@@ -23,184 +23,145 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
 
   Merchant? selectedMerchant;
   Item? selectedItem;
-  List<Widget> goodsWidgets = [];
-  List<Goods> goods = [];
-  int i = 0;
-  final _formKey = GlobalKey<FormState>(); // Key to access the Form
-  final _formKey1 = GlobalKey<FormState>(); // Key to access the Form
+  final List<Goods> goodsList = [];
+  final _formKey = GlobalKey<FormState>();
+  final _formKey1 = GlobalKey<FormState>();
   double sum = 0;
 
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => context.read<ItemProvider>().loadItems());
-
-    Future.microtask(() => context.read<MerchantProvider>().loadMerchants());
-    Future.microtask(
-      () => context.read<PurchaseOrderProvider>().loadPurchaseOrders(),
-    );
+    Future.microtask(() {
+      context.read<ItemProvider>().loadItems();
+      context.read<MerchantProvider>().loadMerchants();
+      context.read<PurchaseOrderProvider>().loadPurchaseOrders();
+    });
   }
 
-  bool _validateAddingPO() {
-    // print(goods.first.itemName);
-    // print(_formKey.currentState!.validate() || goods.isEmpty);
-    return (_formKey.currentState!.validate() && goods.isNotEmpty);
-  }
+  bool _validatePO() => _formKey.currentState!.validate() && goodsList.isNotEmpty;
+  bool _validateGoods() => _formKey1.currentState!.validate();
 
-  bool _validateAddingItem() {
-    return (_formKey1.currentState!.validate());
-  }
+  Future<void> _refresh() async =>
+      context.read<PurchaseOrderProvider>().loadPurchaseOrders();
 
-  Future<void> _getInvoice(String name) async {
-    await context.read<PurchaseOrderProvider>().getInvoice(name);
-  }
+  Future<String> _getMinGoodsPrice(String name) async =>
+      context.read<PurchaseOrderProvider>().getMinGoodsPrice(name);
 
-  Future<void> _refresh() async {
-    await context.read<PurchaseOrderProvider>().loadPurchaseOrders();
-  }
+  Future<void> _addPurchaseOrder(PurchaseOrder order) async =>
+      context.read<PurchaseOrderProvider>().addPurchaseOrder(order);
 
-  Future<String> _getMinGoodsPrice(String goodsName) async {
-    return await context.read<PurchaseOrderProvider>().getMinGoodsPrice(
-      goodsName,
-    );
-  }
+  Future<void> _getInvoice(String pOId) async =>
+      context.read<PurchaseOrderProvider>().getInvoice(pOId);
 
-  Future<void> _addPurchaseOrder(PurchaseOrder purchaseOrder) async {
-    await context.read<PurchaseOrderProvider>().addPurchaseOrder(purchaseOrder);
-  }
-
-  Future<void> _delete(PurchaseOrder purchaseOrder) async {
-    await context.read<PurchaseOrderProvider>().deletePurchaseOrder(
-      purchaseOrder,
-    );
-  }
-
-  Future<dynamic> _addPurchaseOrderDialog(
+  // ==============================
+  // 💬 Add Purchase Order Dialog
+  // ==============================
+  Future<void> _showAddPurchaseOrderDialog(
     BuildContext context,
     MerchantProvider merchantProvider,
     ItemProvider itemProvider,
-  ) {
-    // final itemProvider = context.watch<ItemProvider>();
-
-    goodsWidgets.clear();
-    goods.clear();
+  ) async {
+    goodsList.clear();
     selectedMerchant = null;
     _remainAmount.clear();
     _totalPrice.clear();
     sum = 0;
-    i = 0;
-    return showDialog(
+
+    await showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Add purchaseOrder'),
-          content: ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 400),
-            child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Text('Merchant Name: '),
-                        Expanded(
-                          // width: double.nan,
-                          child: DropdownButtonFormField<Merchant>(
-                            initialValue: selectedMerchant,
-                            items: merchantProvider.merchants
-                                .map(
-                                  (m) => DropdownMenuItem(
-                                    value: m,
-                                    child: Text(m.name),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (m) =>
-                                setState(() => selectedMerchant = m),
-                            validator: (value) {
-                              if (value == null) {
-                                return "Merchant is required";
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                      ],
+          title: const Text('Add Purchase Order'),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          content: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  DropdownButtonFormField<Merchant>(
+                    decoration: const InputDecoration(labelText: 'Merchant Name'),
+                    value: selectedMerchant,
+                    items: merchantProvider.merchants
+                        .map((m) => DropdownMenuItem(
+                              value: m,
+                              child: Text(m.name),
+                            ))
+                        .toList(),
+                    onChanged: (m) => setState(() => selectedMerchant = m),
+                    validator: (v) => v == null ? "Merchant required" : null,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _totalPrice,
+                    readOnly: true,
+                    decoration: const InputDecoration(
+                      labelText: 'Total Price',
+                      prefixIcon: Icon(Icons.calculate),
                     ),
-                    TextFormField(
-                      readOnly: true,
-                      controller: _totalPrice,
-                      decoration: const InputDecoration(
-                        labelText: 'Total Price: ',
-                      ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return "Price is required";
-                        }
-                        final number = double.tryParse(value.trim());
-                        if (number == null) {
-                          return "Please enter a valid number";
-                        }
-                        return null;
-                      },
+                    validator: (v) =>
+                        (v == null || v.isEmpty) ? "Required" : null,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    controller: _remainAmount,
+                    decoration: const InputDecoration(
+                      labelText: 'Remaining Amount',
+                      prefixIcon: Icon(Icons.money),
                     ),
-                    TextField(
-                      controller: _remainAmount,
-                      decoration: const InputDecoration(
-                        labelText: 'Remain Amount: ',
-                      ),
-                    ),
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.add),
-                      label: const Text('Add Goods'),
-                      onPressed: () {
-                        _showItemDialog(context, itemProvider, setState);
-                      },
-                    ),
-                    ...goods.map(
-                      (g) => ListTile(
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.add),
+                    label: const Text('Add Goods'),
+                    onPressed: () =>
+                        _showAddGoodsDialog(context, itemProvider, setState),
+                  ),
+                  const SizedBox(height: 12),
+                  ...goodsList.map(
+                    (g) => Card(
+                      elevation: 1,
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      child: ListTile(
                         title: Text(g.itemName),
-                        subtitle: Text(
-                          'Price: ${g.priceForGrams}, Qty: ${g.weightInGrams}',
-                        ),
+                        subtitle:
+                            Text('Price: ${g.priceForGrams}, Qty: ${g.weightInGrams}g'),
                         trailing: IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
+                          icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
                             setState(() {
-                              goods.remove(g);
                               sum -= (g.priceForGrams * g.weightInGrams);
-                              _totalPrice.text = ((sum * 100).round() / 100)
-                                  .toString();
+                              goodsList.remove(g);
+                              _totalPrice.text = sum.toStringAsFixed(2);
                             });
                           },
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
-
           actions: [
-            ElevatedButton(
+            FilledButton.icon(
+              icon: const Icon(Icons.check),
+              label: const Text('Save'),
               onPressed: () {
-                if (_validateAddingPO()) {
+                if (_validatePO()) {
                   _addPurchaseOrder(
                     PurchaseOrder(
                       merchantName: selectedMerchant!.name,
                       totalPrice: double.parse(_totalPrice.text),
-                      remainAmount: double.tryParse(_remainAmount.text) ?? 0.0,
-                      goods: goods,
+                      remainAmount:
+                          double.tryParse(_remainAmount.text) ?? 0.0,
+                      goods: goodsList,
                     ),
                   );
                   Navigator.pop(context);
                 }
               },
-              child: const Text('Add'),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -212,112 +173,91 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
     );
   }
 
-  Future<dynamic> _showItemDialog(
+  // ==============================
+  // 📦 Add Goods Dialog
+  // ==============================
+  Future<void> _showAddGoodsDialog(
     BuildContext context,
     ItemProvider itemProvider,
     void Function(void Function()) parentSetState,
-  ) {
-    Goods g = Goods(itemName: 'name', priceForGrams: 0, weightInGrams: 0);
-    selectedItem = null;
+  ) async {
+    final Goods g = Goods(itemName: '', priceForGrams: 0, weightInGrams: 0);
     _priceForGram.clear();
-    return showDialog(
+    selectedItem = null;
+
+    await showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Add item: '),
-          content: SingleChildScrollView(
-            child: Form(
-              key: _formKey1,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Text('Item Name: '),
-                      Flexible(
-                        child: DropdownButtonFormField<Item>(
-                          initialValue: selectedItem,
-                          items: itemProvider.items
-                              .map(
-                                (m) => DropdownMenuItem(
-                                  value: m,
-                                  child: Text(m.name),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (m) async => {
-                            setState(() => selectedItem = m),
-                            g.itemName = selectedItem!.name,
-                            _priceForGram.text = await _getMinGoodsPrice(
-                              g.itemName,
-                            ),
-                            g.priceForGrams = double.parse(_priceForGram.text),
-                          },
-                          validator: (value) {
-                            if (value == null) {
-                              return "Item is required";
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Price (g)'),
-                    controller: _priceForGram,
-                    onChanged: (value) => g.priceForGrams = double.parse(value),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Price is required";
-                      }
-                      final number = double.tryParse(value.trim());
-                      if (number == null) {
-                        return "Please enter a valid number";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Wight (g)'),
-                    onChanged: (value) => g.weightInGrams = double.parse(value),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Weight is required";
-                      }
-                      final number = double.tryParse(value.trim());
-                      if (number == null) {
-                        return "Please enter a valid number";
-                      }
-                      return null;
-                    },
-                  ),
-                ],
-              ),
+          title: const Text('Add Goods'),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          content: Form(
+            key: _formKey1,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                DropdownButtonFormField<Item>(
+                  decoration: const InputDecoration(labelText: 'Item'),
+                  value: selectedItem,
+                  items: itemProvider.items
+                      .map((i) => DropdownMenuItem(
+                            value: i,
+                            child: Text(i.name),
+                          ))
+                      .toList(),
+                  onChanged: (i) async {
+                    setState(() => selectedItem = i);
+                    g.itemName = i!.name;
+                    _priceForGram.text = await _getMinGoodsPrice(i.name);
+                    g.priceForGrams = double.parse(_priceForGram.text);
+                  },
+                  validator: (v) => v == null ? "Item required" : null,
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _priceForGram,
+                  decoration: const InputDecoration(labelText: 'Price per gram'),
+                  keyboardType: TextInputType.number,
+                  onChanged: (v) => g.priceForGrams = double.tryParse(v) ?? 0.0,
+                  validator: (v) => (v == null || v.isEmpty)
+                      ? "Price required"
+                      : double.tryParse(v) == null
+                          ? "Invalid number"
+                          : null,
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Weight (grams)'),
+                  keyboardType: TextInputType.number,
+                  onChanged: (v) => g.weightInGrams = double.tryParse(v) ?? 0.0,
+                  validator: (v) => (v == null || v.isEmpty)
+                      ? "Weight required"
+                      : double.tryParse(v) == null
+                          ? "Invalid number"
+                          : null,
+                ),
+              ],
             ),
           ),
           actions: [
-            ElevatedButton.icon(
+            FilledButton.icon(
               icon: const Icon(Icons.add),
               label: const Text('Add'),
               onPressed: () {
-                if (_validateAddingItem()) {
+                if (_validateGoods()) {
                   parentSetState(() {
-                    goods.add(g);
+                    goodsList.add(g);
                     sum += g.priceForGrams * g.weightInGrams;
-                    _totalPrice.text = ((sum * 100).round() / 100).toString();
+                    _totalPrice.text = sum.toStringAsFixed(2);
                   });
                   Navigator.pop(context);
                 }
               },
             ),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.cancel),
-              label: const Text('Cancel'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
             ),
           ],
         ),
@@ -325,140 +265,94 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
     );
   }
 
-  Future<dynamic> _showPurchaseOrderDialog(List<Goods> goods) {
-    TextStyle style = TextStyle(
-      fontSize: MediaQuery.of(context).size.width * .04,
-    );
-    return showDialog(
+  // ==============================
+  // 🧾 Show Purchase Order Details
+  // ==============================
+  Future<void> _showPurchaseOrderDialog(List<Goods> goods,String pOId) async {
+    await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Show Purchase Order'),
-        content: SizedBox(
-          width: double.maxFinite, // helps with layout in dialogs
+        title: Text('PO: $pOId'),
+        content: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                children: [
-                  Column(children: [Text('Name', style: style)]),
-                  Column(children: [Text('Price', style: style)]),
-                  Column(children: [Text('Weight (g)', style: style)]),
+                children: const [
+                  Text('Name', style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text('Price'),
+                  Text('Weight'),
                 ],
               ),
-              ListView.builder(
-                shrinkWrap: true, // ✅ let ListView size itself
-                physics:
-                    const NeverScrollableScrollPhysics(), // ✅ disable its own scrolling
-                itemCount: goods.length,
-                itemBuilder: (_, i) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(children: [Text(goods[i].itemName)]),
-                      Column(children: [Text('${goods[i].priceForGrams}')]),
-                      Column(children: [Text('${goods[i].weightInGrams}')]),
-                    ],
-                  ),
-                ),
-              ),
+              const Divider(),
+              ...goods.map((g) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(g.itemName),
+                        Text('${g.priceForGrams}'),
+                        Text('${g.weightInGrams}'),
+                      ],
+                    ),
+                  )),
             ],
           ),
         ),
-
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context), // close dialog
-            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
           ),
         ],
       ),
     );
   }
 
+  // ==============================
+  // 🧱 Main UI
+  // ==============================
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<PurchaseOrderProvider>();
-    final merchantProvider = context.watch<MerchantProvider>();
-    final itemProvider = context.watch<ItemProvider>();
+    final merchants = context.watch<MerchantProvider>();
+    final items = context.watch<ItemProvider>();
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('PurchaseOrders', style: TextStyle()),
-            Spacer(),
-            IconButton(onPressed: _refresh, icon: Icon(Icons.refresh)),
-            IconButton(
-              onPressed: () {
-                _addPurchaseOrderDialog(
-                  context,
-                  merchantProvider,
-                  itemProvider,
-                );
-              },
-              icon: Icon(Icons.add),
-            ),
-          ],
-        ),
-      ),
-      body: ListView.builder(
-        padding: EdgeInsets.zero,
-        itemCount: provider.purchaseOrders.length,
-        itemBuilder: (_, i) => TextButton(
-          onPressed: () =>
-              _showPurchaseOrderDialog(provider.purchaseOrders[i].goods),
-          child: Card(
-            elevation: 3,
-            margin: const EdgeInsets.symmetric(vertical: 2),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 8.0,
-                horizontal: 16.0,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child:
-                        (provider.purchaseOrders[i].date?.isNotEmpty ?? false)
-                        ? Text(provider.purchaseOrders[i].date!)
-                        : const SizedBox.shrink(),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text(provider.purchaseOrders[i].merchantName),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text('${provider.purchaseOrders[i].totalPrice}'),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text('${provider.purchaseOrders[i].remainAmount}'),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text('${provider.purchaseOrders[i].pOId}'),
-                  ),
-                  IconButton(
-                    onPressed: () =>
-                        _getInvoice(provider.purchaseOrders[i].pOId!),
-                    icon: const Icon(
-                      Icons.picture_as_pdf,
-                      color: Color.fromARGB(255, 160, 28, 23),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+        title: const Text('Purchase Orders'),
+        actions: [
+          IconButton(onPressed: _refresh, icon: const Icon(Icons.refresh)),
+          IconButton(
+            onPressed: () => _showAddPurchaseOrderDialog(context, merchants, items),
+            icon: const Icon(Icons.add),
           ),
+        ],
+      ),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: ListView.builder(
+          padding: const EdgeInsets.all(8),
+          itemCount: provider.purchaseOrders.length,
+          itemBuilder: (_, i) {
+            final po = provider.purchaseOrders[i];
+            return Card(
+              elevation: 3,
+              margin: const EdgeInsets.symmetric(vertical: 4),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: ListTile(
+                onTap: () => _showPurchaseOrderDialog(po.goods,po.pOId ?? ''),
+                title: Text(po.merchantName),
+                subtitle: Text('${po.date} •  Total: ${po.totalPrice} • Remain: ${po.remainAmount}'),
+                trailing: IconButton(
+                  icon: const Icon(Icons.picture_as_pdf, color: Colors.redAccent),
+                  onPressed: () => _getInvoice(po.pOId!),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

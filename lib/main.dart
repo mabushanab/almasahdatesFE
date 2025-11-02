@@ -79,7 +79,7 @@ class MyApp extends StatelessWidget {
 
           // colorSchemeSeed:
         // ThemeData.light(),//Theme.darkTheme,
-        theme: myTheme.lightTheme,
+        theme: MyTheme.lightTheme,
         initialRoute: '/login',
         routes: AppRoutes.routes,
       ),

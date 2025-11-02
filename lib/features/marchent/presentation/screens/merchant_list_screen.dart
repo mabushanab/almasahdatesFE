@@ -1,8 +1,7 @@
-// screens/merchant_list_screen.dart
 import 'package:almasah_dates/features/marchent/data/models/merchent.dart';
-import 'package:almasah_dates/features/marchent/presentation/providers/merchant_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:almasah_dates/features/marchent/presentation/providers/merchant_provider.dart';
 
 class MerchantListScreen extends StatefulWidget {
   const MerchantListScreen({super.key});
@@ -12,159 +11,123 @@ class MerchantListScreen extends StatefulWidget {
 }
 
 class _MerchantListScreenState extends State<MerchantListScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _merchantName = TextEditingController();
   final _merchantType = TextEditingController();
   final _merchantAddress = TextEditingController();
   final _merchantMobileNumber = TextEditingController();
   final _merchantNotes = TextEditingController();
-  final _formKey = GlobalKey<FormState>(); // Key to access the Form
 
   @override
   void initState() {
     super.initState();
-
-    // ✅ Load merchants once when the screen opens
     Future.microtask(() => context.read<MerchantProvider>().loadMerchants());
   }
 
-  bool _validateAddingItem() {
-    return (_formKey.currentState!.validate());
-  }
+  Future<void> _refresh() async =>
+      context.read<MerchantProvider>().loadMerchants();
 
-  // List merchants =;
-  Future<void> _refresh() async {
-    await context.read<MerchantProvider>().loadMerchants();
-  }
+  Future<void> _addMerchant(Merchant m) async =>
+      context.read<MerchantProvider>().addMerchant(m);
 
-  Future<void> _addMerchant(Merchant merchant) async {
-    await context.read<MerchantProvider>().addMerchant(merchant);
-  }
+  Future<void> _deleteMerchant(Merchant m) async =>
+      context.read<MerchantProvider>().deleteMerchant(m);
 
-  Future<void> _delete(Merchant merchant) async {
-    await context.read<MerchantProvider>().deleteMerchant(merchant);
-  }
+  bool _isFormValid() => _formKey.currentState!.validate();
 
-  Future<dynamic> _addMerchantDialog(BuildContext context) {
-    return showDialog(
+  void _showAddMerchantDialog() {
+    showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add merchant'),
-        content: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxHeight: 400, // prevent infinite height
-          ),
+      builder: (_) => AlertDialog(
+        title: const Text('Add Merchant', style: TextStyle(fontWeight: FontWeight.bold)),
+        content: Form(
+          key: _formKey,
           child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: _merchantName,
-                    decoration: const InputDecoration(labelText: 'Name'),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Name is required";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _merchantType,
-                    decoration: const InputDecoration(labelText: 'Type'),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Type is required";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextField(
-                    controller: _merchantMobileNumber,
-                    decoration: const InputDecoration(
-                      labelText: 'Mobile Number',
-                    ),
-                  ),
-                  TextFormField(
-                    controller: _merchantAddress,
-                    decoration: const InputDecoration(labelText: 'Address'),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Address is required";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextField(
-                    controller: _merchantNotes,
-                    decoration: const InputDecoration(labelText: 'Notes'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              if (_validateAddingItem()) {
-                _addMerchant(
-                  Merchant(
-                    name: _merchantName.text,
-                    type: _merchantType.text,
-                    address: _merchantAddress.text,
-                    mobileNumber: _merchantMobileNumber.text,
-                    notes: _merchantNotes.text,
-                  ),
-                );
-                Navigator.pop(context);
-              } // close popup
-            },
-            child: const Text('Add'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context), // close dialog
-            child: const Text('Cancel'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<dynamic> _showMerchantDialog(Merchant merchant) {
-    return showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Show merchant'),
-        content: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxHeight: 400, // prevent infinite height
-          ),
-          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Name: ${merchant.name}'),
-                Text('Type: ${merchant.type}'),
-                Text('Mobile: ${merchant.mobileNumber}'),
-                Text('Addr: ${merchant.address}'),
-                Text('Notes: ${merchant.notes}'),
-                Text('Rate: ${merchant.rate}'),
+                _buildField(_merchantName, 'Name', validator: true),
+                _buildField(_merchantType, 'Type', validator: true),
+                _buildField(_merchantMobileNumber, 'Mobile Number'),
+                _buildField(_merchantAddress, 'Address'),
+                _buildField(_merchantNotes, 'Notes'),
               ],
             ),
           ),
         ),
-
         actions: [
+          ElevatedButton.icon(
+            icon: const Icon(Icons.add),
+            label: const Text('Add'),
+            onPressed: () {
+              if (_isFormValid()) {
+                _addMerchant(Merchant(
+                  name: _merchantName.text,
+                  type: _merchantType.text,
+                  address: _merchantAddress.text,
+                  mobileNumber: _merchantMobileNumber.text,
+                  notes: _merchantNotes.text,
+                ));
+                Navigator.pop(context);
+              }
+            },
+          ),
           TextButton(
-            onPressed: () => Navigator.pop(context), // close dialog
             child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(context),
           ),
         ],
       ),
     );
   }
+
+  Widget _buildField(TextEditingController controller, String label,
+      {bool validator = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
+        ),
+        validator: validator
+            ? (v) => (v == null || v.trim().isEmpty) ? '$label is required' : null
+            : null,
+      ),
+    );
+  }
+
+  void _showDetails(Merchant m) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Merchant Details'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _detailRow('Name', m.name),
+            _detailRow('Type', m.type),
+            _detailRow('Mobile', m.mobileNumber),
+            _detailRow('Address', m.address),
+            _detailRow('Notes', m.notes),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _detailRow(String title, String? value) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Text('$title: ${value ?? ''}', style: const TextStyle(fontSize: 14)),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -172,49 +135,31 @@ class _MerchantListScreenState extends State<MerchantListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Merchants', style: TextStyle()),
-            Spacer(),
-            IconButton(onPressed: _refresh, icon: Icon(Icons.refresh)),
-            IconButton(
-              onPressed: () {
-                _addMerchantDialog(context);
-              },
-              icon: Icon(Icons.add),
-            ),
-          ],
-        ),
+        title: const Text('Merchants'),
+        actions: [
+          IconButton(onPressed: _refresh, icon: const Icon(Icons.refresh)),
+          IconButton(onPressed: _showAddMerchantDialog, icon: const Icon(Icons.add)),
+        ],
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.zero,
-        itemCount: provider.merchants.length,
-        itemBuilder: (_, i) => TextButton(
-          onPressed: () => _showMerchantDialog(provider.merchants[i]),
-
-          // context);
-          // onPressed: () {
-          // _showMerchantDialog(provider.merchants[i],
-          // },
-          child: Card(
-            elevation: 3,
-            margin: const EdgeInsets.symmetric(vertical: 2),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(provider.merchants[i].name),
-                const Spacer(),
-                IconButton(
-                  onPressed: () => _delete(provider.merchants[i]),
-                  icon: Icon(Icons.delete),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: ListView.builder(
+          itemCount: provider.merchants.length,
+          itemBuilder: (_, i) {
+            final m = provider.merchants[i];
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              child: ListTile(
+                title: Text(m.name, style: const TextStyle(fontWeight: FontWeight.w500)),
+                subtitle: Text(m.type),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () => _deleteMerchant(m),
                 ),
-              ],
-            ),
-          ),
+                onTap: () => _showDetails(m),
+              ),
+            );
+          },
         ),
       ),
     );

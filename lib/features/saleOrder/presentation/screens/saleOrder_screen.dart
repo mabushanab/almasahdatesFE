@@ -20,177 +20,150 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
   final _remainAmount = TextEditingController();
   final _priceForItem = TextEditingController();
 
-  // final _quantity = TextEditingController();
   Customer? selectedCustomer;
   Item? selectedItem;
-  List<Widget> productWidgets = [];
-  List<Product> product = [];
-  int i = 0;
-  final _formKey = GlobalKey<FormState>(); // Key to access the Form
-  final _formKey1 = GlobalKey<FormState>(); // Key to access the Form
+  final List<Product> products = [];
+  final _formKey = GlobalKey<FormState>();
+  final _formKey1 = GlobalKey<FormState>();
   double sum = 0;
 
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => context.read<ItemProvider>().loadItems());
-
-    Future.microtask(() => context.read<CustomerProvider>().loadCustomers());
-    Future.microtask(() => context.read<SaleOrderProvider>().loadSaleOrders());
+    Future.microtask(() {
+      context.read<ItemProvider>().loadItems();
+      context.read<CustomerProvider>().loadCustomers();
+      context.read<SaleOrderProvider>().loadSaleOrders();
+    });
   }
 
-  bool _validateAddingSO() {
-    return (_formKey.currentState!.validate() && product.isNotEmpty);
-  }
+  bool _validateSO() => _formKey.currentState!.validate() && products.isNotEmpty;
+  bool _validateItem() => _formKey1.currentState!.validate();
 
-  bool _validateAddingItem() {
-    return (_formKey1.currentState!.validate());
-  }
+  Future<void> _refresh() async =>
+      await context.read<SaleOrderProvider>().loadSaleOrders();
 
-  Future<void> _refresh() async {
-    await context.read<SaleOrderProvider>().loadSaleOrders();
-  }
+  Future<String> _getMaxProductPrice(String name) async =>
+      context.read<SaleOrderProvider>().getMaxProductPrice(name);
 
-  Future<String> _getMaxProductPrice(String goodsName) async {
-    return await context.read<SaleOrderProvider>().getMaxProductPrice(
-      goodsName,
-    );
-  }
+  Future<void> _addSaleOrder(SaleOrder order) async =>
+      context.read<SaleOrderProvider>().addSaleOrder(order);
 
-  Future<void> _addSaleOrder(SaleOrder saleOrder) async {
-    await context.read<SaleOrderProvider>().addSaleOrder(saleOrder);
-  }
+  Future<void> _getInvoice(String name) async =>
+      context.read<SaleOrderProvider>().getInvoice(name);
 
-  Future<void> _getInvoice(String name) async {
-    await context.read<SaleOrderProvider>().getInvoice(name);
-  }
-
-  Future<dynamic> _addSaleOrderDialog(
+  // ==============================
+  // 💬 Add Sale Order Dialog
+  // ==============================
+  Future<void> _showAddSaleOrderDialog(
     BuildContext context,
     CustomerProvider customerProvider,
     ItemProvider itemProvider,
-  ) {
-    // final itemProvider = context.watch<ItemProvider>();
-
-    productWidgets.clear();
-    product.clear();
+  ) async {
+    products.clear();
     selectedCustomer = null;
     _remainAmount.clear();
     _totalPrice.clear();
-    i = 0;
     sum = 0;
 
-    return showDialog(
+    await showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Add saleOrder'),
-          content: ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 400),
-            child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Text('Customer Name: '),
-                        Expanded(
-                          child: DropdownButtonFormField<Customer>(
-                            initialValue: selectedCustomer,
-                            items: customerProvider.customers
-                                .map(
-                                  (m) => DropdownMenuItem(
-                                    value: m,
-                                    child: Text(m.name),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (m) =>
-                                setState(() => selectedCustomer = m),
-                            validator: (value) {
-                              if (value == null) {
-                                return "Merchant is required";
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                      ],
+          title: const Text('Add Sale Order'),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          content: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  DropdownButtonFormField<Customer>(
+                    decoration:
+                        const InputDecoration(labelText: 'Customer Name'),
+                    value: selectedCustomer,
+                    items: customerProvider.customers
+                        .map((c) => DropdownMenuItem(
+                              value: c,
+                              child: Text(c.name),
+                            ))
+                        .toList(),
+                    onChanged: (c) => setState(() => selectedCustomer = c),
+                    validator: (v) =>
+                        v == null ? "Customer is required" : null,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _totalPrice,
+                    readOnly: true,
+                    decoration: const InputDecoration(
+                      labelText: 'Total Price (JOD)',
+                      prefixIcon: Icon(Icons.calculate),
                     ),
-                    TextFormField(
-                      readOnly: true,
-                      controller: _totalPrice,
-                      decoration: const InputDecoration(
-                        labelText: 'Total Price: ',
-                      ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return "Price is required";
-                        }
-                        final number = double.tryParse(value.trim());
-                        if (number == null) {
-                          return "Please enter a valid number";
-                        }
-                        return null;
-                      },
+                    validator: (v) =>
+                        (v == null || v.isEmpty) ? "Required" : null,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _remainAmount,
+                    decoration: const InputDecoration(
+                      labelText: 'Remaining Amount',
+                      prefixIcon: Icon(Icons.money),
                     ),
-                    TextFormField(
-                      controller: _remainAmount,
-                      decoration: const InputDecoration(
-                        labelText: 'Remain Amount: ',
-                      ),
-                    ),
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.add),
-                      label: const Text('Add Product'),
-                      onPressed: () {
-                        _showItemDialog(context, itemProvider, setState);
-                      },
-                    ),
-                    ...product.map(
-                      (g) => ListTile(
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.add),
+                    label: const Text('Add Product'),
+                    onPressed: () =>
+                        _showAddItemDialog(context, itemProvider, setState),
+                  ),
+                  const SizedBox(height: 12),
+                  ...products.map(
+                    (g) => Card(
+                      elevation: 1,
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      child: ListTile(
                         title: Text(g.itemName),
                         subtitle: Text(
-                          'Price: ${g.priceForItem}, Qty: ${g.quantity}, Box: ${g.boxCost}',
+                          'Price: ${g.priceForItem}, Qty: ${g.quantity}, Discount: ${g.boxCost}%',
                         ),
                         trailing: IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
+                          icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
                             setState(() {
-                              product.remove(g);
                               sum -= (g.priceForItem * g.quantity);
-                              _totalPrice.text = ((sum * 100).round() / 100)
-                                  .toString();
+                              products.remove(g);
+                              _totalPrice.text =
+                                  (sum.toStringAsFixed(2)).toString();
                             });
                           },
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
-
           actions: [
-            ElevatedButton(
+            FilledButton.icon(
+              icon: const Icon(Icons.check),
+              label: const Text('Save'),
               onPressed: () {
-                if (_validateAddingSO()) {
+                if (_validateSO()) {
                   _addSaleOrder(
                     SaleOrder(
                       customerName: selectedCustomer!.name,
                       totalPrice: double.parse(_totalPrice.text),
-                      remainAmount: double.tryParse(_remainAmount.text) ?? 0.0,
-                      products: product,
+                      remainAmount:
+                          double.tryParse(_remainAmount.text) ?? 0.0,
+                      products: products,
                     ),
                   );
                   Navigator.pop(context);
                 }
               },
-              child: const Text('Add'),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -202,126 +175,105 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
     );
   }
 
-  Future<dynamic> _showItemDialog(
+  // ==============================
+  // 📦 Add Product Dialog
+  // ==============================
+  Future<void> _showAddItemDialog(
     BuildContext context,
     ItemProvider itemProvider,
     void Function(void Function()) parentSetState,
-  ) {
-    Product g = Product(
-      itemName: 'name',
+  ) async {
+    final Product p = Product(
+      itemName: '',
       priceForItem: 0,
       quantity: 0,
       boxCost: 0,
     );
     _priceForItem.clear();
     selectedItem = null;
-    return showDialog(
+
+    await showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Add item: '),
-          content: SingleChildScrollView(
-            child: Form(
-              key: _formKey1,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Text('Item Name: '),
-                      Flexible(
-                        child: DropdownButtonFormField<Item>(
-                          initialValue: selectedItem,
-                          items: itemProvider.items
-                              .map(
-                                (m) => DropdownMenuItem(
-                                  value: m,
-                                  child: Text(m.name),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (m) async => {
-                            setState(() => selectedItem = m),
-                            g.itemName = selectedItem!.name,
-                            _priceForItem.text = await _getMaxProductPrice(
-                              g.itemName,
-                            ),
-                            g.priceForItem = double.parse(_priceForItem.text),
-                          },
-                          validator: (value) {
-                            if (value == null) {
-                              return "Item is required";
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  TextFormField(
-                    controller: _priceForItem,
-                    decoration: const InputDecoration(
-                      labelText: 'Price for item',
-                    ),
-                    onChanged: (value) => g.priceForItem = double.parse(value),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Price is required";
-                      }
-                      final number = double.tryParse(value.trim());
-                      if (number == null) {
-                        return "Please enter a valid number";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'quantity'),
-                    onChanged: (value) => g.quantity = int.parse(value),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Quantity is required";
-                      }
-                      final number = double.tryParse(value.trim());
-                      if (number == null) {
-                        return "Please enter a valid number";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextField(
-                    decoration: const InputDecoration(labelText: '%Discount'),
-                    onChanged: (value) async => {
-                      g.boxCost = double.tryParse(value) ?? 0.0,
-                      // g.priceForItem = g.priceForItem - (g.priceForItem * g.boxCost)/10,
-                    },
-                  ),
-                ],
-              ),
+          title: const Text('Add Product'),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          content: Form(
+            key: _formKey1,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                DropdownButtonFormField<Item>(
+                  decoration: const InputDecoration(labelText: 'Item'),
+                  value: selectedItem,
+                  items: itemProvider.items
+                      .map((i) => DropdownMenuItem(
+                            value: i,
+                            child: Text(i.name),
+                          ))
+                      .toList(),
+                  onChanged: (i) async {
+                    setState(() => selectedItem = i);
+                    p.itemName = i!.name;
+                    _priceForItem.text = await _getMaxProductPrice(i.name);
+                    p.priceForItem = double.parse(_priceForItem.text);
+                  },
+                  validator: (v) => v == null ? "Item required" : null,
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _priceForItem,
+                  decoration:
+                      const InputDecoration(labelText: 'Price per Item'),
+                  keyboardType: TextInputType.number,
+                  onChanged: (v) =>
+                      p.priceForItem = double.tryParse(v) ?? 0.0,
+                  validator: (v) => (v == null || v.isEmpty)
+                      ? "Price required"
+                      : double.tryParse(v) == null
+                          ? "Invalid number"
+                          : null,
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Quantity'),
+                  keyboardType: TextInputType.number,
+                  onChanged: (v) => p.quantity = int.tryParse(v) ?? 0,
+                  validator: (v) => (v == null || v.isEmpty)
+                      ? "Quantity required"
+                      : int.tryParse(v) == null
+                          ? "Invalid number"
+                          : null,
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  decoration:
+                      const InputDecoration(labelText: 'Discount (%)'),
+                  keyboardType: TextInputType.number,
+                  onChanged: (v) => p.boxCost = double.tryParse(v) ?? 0.0,
+                ),
+              ],
             ),
           ),
           actions: [
-            ElevatedButton.icon(
+            FilledButton.icon(
               icon: const Icon(Icons.add),
               label: const Text('Add'),
               onPressed: () {
-                if (_validateAddingItem()) {
+                if (_validateItem()) {
                   parentSetState(() {
-                    product.add(g);
-                    sum += (g.priceForItem * g.quantity);
-                    _totalPrice.text = ((sum * 100).round() / 100).toString();
+                    products.add(p);
+                    sum += (p.priceForItem * p.quantity);
+                    _totalPrice.text = sum.toStringAsFixed(2);
                   });
                   Navigator.pop(context);
                 }
               },
             ),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.cancel),
-              label: const Text('Cancel'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
             ),
           ],
         ),
@@ -329,134 +281,96 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
     );
   }
 
-  Future<dynamic> _showSaleOrderDialog(List<Product> product) {
-    TextStyle style = TextStyle(
-      fontSize: MediaQuery.of(context).size.width * .04,
-    );
-    return showDialog(
+  // ==============================
+  // 🧾 Show Sale Order Details
+  // ==============================
+  Future<void> _showSaleOrderDialog(List<Product> products,String sOId) async {
+    await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Show Sale Order'),
-        content: SizedBox(
-          width: double.maxFinite, // helps with layout in dialogs
+        title: Text('SO: $sOId'),
+        content: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                children: [
-                  Column(children: [Text('Name', style: style)]),
-                  Column(children: [Text('Price', style: style)]),
-                  Column(children: [Text('Weight (g)', style: style)]),
+                children: const [
+                  Text('Name', style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text('Price'),
+                  Text('Qty'),
                 ],
               ),
-              ListView.builder(
-                shrinkWrap: true, // ✅ let ListView size itself
-                physics:
-                    const NeverScrollableScrollPhysics(), // ✅ disable its own scrolling
-                itemCount: product.length,
-                itemBuilder: (_, i) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(children: [Text(product[i].itemName)]),
-                      Column(children: [Text('${product[i].priceForItem}')]),
-                      Column(children: [Text('${product[i].quantity}')]),
-                    ],
-                  ),
-                ),
-              ),
+              const Divider(),
+              ...products.map((p) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(p.itemName),
+                        Text('${p.priceForItem}'),
+                        Text('${p.quantity}'),
+                      ],
+                    ),
+                  )),
             ],
           ),
         ),
-
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context), // close dialog
-            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
           ),
         ],
       ),
     );
   }
 
+  // ==============================
+  // 🧱 Main UI
+  // ==============================
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<SaleOrderProvider>();
-    final customerProvider = context.watch<CustomerProvider>();
-    final itemProvider = context.watch<ItemProvider>();
+    final customers = context.watch<CustomerProvider>();
+    final items = context.watch<ItemProvider>();
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('SaleOrders', style: TextStyle()),
-            Spacer(),
-            IconButton(onPressed: _refresh, icon: Icon(Icons.refresh)),
-            IconButton(
-              onPressed: () {
-                _addSaleOrderDialog(context, customerProvider, itemProvider);
-              },
-              icon: Icon(Icons.add),
-            ),
-          ],
-        ),
-      ),
-      body: ListView.builder(
-        padding: EdgeInsets.zero,
-        itemCount: provider.saleOrders.length,
-        itemBuilder: (_, i) => TextButton(
-          onPressed: () =>
-              _showSaleOrderDialog(provider.saleOrders[i].products),
-          child: Card(
-            elevation: 3,
-            margin: const EdgeInsets.symmetric(vertical: 2),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 8.0,
-                horizontal: 16.0,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: (provider.saleOrders[i].date?.isNotEmpty ?? false)
-                        ? Text(provider.saleOrders[i].date!)
-                        : const SizedBox.shrink(),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text(provider.saleOrders[i].customerName),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text('${provider.saleOrders[i].totalPrice}'),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text('${provider.saleOrders[i].remainAmount}'),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text(provider.saleOrders[i].sOId ?? ''),
-                  ),
-                  IconButton(
-                    onPressed: () => _getInvoice(provider.saleOrders[i].sOId!),
-                    icon: const Icon(
-                      Icons.picture_as_pdf,
-                      color: Color.fromARGB(255, 160, 28, 23),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+        title: const Text('Sale Orders'),
+        actions: [
+          IconButton(onPressed: _refresh, icon: const Icon(Icons.refresh)),
+          IconButton(
+            onPressed: () =>
+                _showAddSaleOrderDialog(context, customers, items),
+            icon: const Icon(Icons.add),
           ),
+        ],
+      ),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: ListView.builder(
+          padding: const EdgeInsets.all(8),
+          itemCount: provider.saleOrders.length,
+          itemBuilder: (_, i) {
+            final so = provider.saleOrders[i];
+            return Card(
+              elevation: 3,
+              margin: const EdgeInsets.symmetric(vertical: 4),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: ListTile(
+                onTap: () => _showSaleOrderDialog(so.products,so.sOId?? ''),
+                title: Text(so.customerName),
+                subtitle: Text('${so.date} •  Total: ${so.totalPrice} • Remain: ${so.remainAmount}'),
+                trailing: IconButton(
+                  icon: const Icon(Icons.picture_as_pdf,
+                      color: Colors.redAccent),
+                  onPressed: () => _getInvoice(so.sOId ?? ''),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

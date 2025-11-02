@@ -1,4 +1,3 @@
-// screens/item_list_screen.dart
 import 'package:almasah_dates/features/items/data/models/item.dart';
 import 'package:almasah_dates/features/items/presentation/providers/item_provider.dart';
 import 'package:flutter/material.dart';
@@ -15,96 +14,55 @@ class _ItemListScreenState extends State<ItemListScreen> {
   final _itemName = TextEditingController();
   final _itemType = TextEditingController();
   final _itemSubType = TextEditingController();
-  final _itemdescr = TextEditingController();
-
-  final _formKey = GlobalKey<FormState>(); // Key to access the Form
+  final _itemDescr = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-
-    // ✅ Load items once when the screen opens
     Future.microtask(() => context.read<ItemProvider>().loadItems());
   }
 
-  bool _validateAddingItem() {
-    return (_formKey.currentState!.validate());
-  }
+  Future<void> _refresh() async =>
+      context.read<ItemProvider>().loadItems();
 
-  // List items =;
-  Future<void> _refresh() async {
-    await context.read<ItemProvider>().loadItems();
-  }
+  Future<void> _addItem(Item item) async =>
+      context.read<ItemProvider>().addItem(item);
 
-  Future<void> _addItem(Item item) async {
-    await context.read<ItemProvider>().addItem(item);
-  }
+  Future<void> _delete(Item item) async =>
+      context.read<ItemProvider>().deleteItem(item);
 
-  Future<void> _delete(Item item) async {
-    await context.read<ItemProvider>().deleteItem(item);
-  }
-
-  Future<dynamic> _addItemDialog(BuildContext context) {
-    return showDialog(
+  Future<void> _showAddDialog() async {
+    await showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add item'),
-        content: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxHeight: 400, // prevent infinite height
-          ),
-          child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: _itemName,
-                    decoration: const InputDecoration(labelText: 'Name'),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Name is required";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _itemType,
-                    decoration: const InputDecoration(labelText: 'Type'),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Type is required";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextField(
-                    controller: _itemSubType,
-                    decoration: const InputDecoration(labelText: 'SubType'),
-                  ),
-                  TextField(
-                    controller: _itemdescr,
-                    decoration: const InputDecoration(labelText: 'Description'),
-                  ),
-                ],
-              ),
+      builder: (_) => AlertDialog(
+        title: const Text('Add Item'),
+        content: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                _field(_itemName, 'Name', requiredField: true),
+                _field(_itemType, 'Type', requiredField: true),
+                _field(_itemSubType, 'SubType'),
+                _field(_itemDescr, 'Description'),
+              ],
             ),
           ),
         ),
-
         actions: [
-          ElevatedButton(
+          ElevatedButton.icon(
             onPressed: () {
-              if (_validateAddingItem()) {
+              if (_formKey.currentState!.validate()) {
                 _addItem(Item(name: _itemName.text, type: _itemType.text));
                 Navigator.pop(context);
               }
             },
-            child: const Text('Add'),
+            icon: const Icon(Icons.check),
+            label: const Text('Add'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context), // close dialog
+            onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
           ),
         ],
@@ -112,32 +70,19 @@ class _ItemListScreenState extends State<ItemListScreen> {
     );
   }
 
-  Future<dynamic> _showItemDialog(Item item) {
-    return showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Show item'),
-        content: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxHeight: 400, // prevent infinite height
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('Name: ${item.name}'),
-                Text('Type: ${item.type}'),
-              ],
-            ),
-          ),
+  Widget _field(TextEditingController c, String label,
+      {bool requiredField = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: TextFormField(
+        controller: c,
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
         ),
-
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context), // close dialog
-            child: const Text('Cancel'),
-          ),
-        ],
+        validator: requiredField
+            ? (v) => v == null || v.trim().isEmpty ? "$label is required" : null
+            : null,
       ),
     );
   }
@@ -148,49 +93,53 @@ class _ItemListScreenState extends State<ItemListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Items', style: TextStyle()),
-            Spacer(),
-            IconButton(onPressed: _refresh, icon: Icon(Icons.refresh)),
-            IconButton(
-              onPressed: () {
-                _addItemDialog(context);
-              },
-              icon: Icon(Icons.add),
-            ),
-          ],
-        ),
+        title: const Text('Items'),
+        actions: [
+          IconButton(onPressed: _refresh, icon: const Icon(Icons.refresh)),
+          IconButton(onPressed: _showAddDialog, icon: const Icon(Icons.add)),
+        ],
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.zero,
-        itemCount: provider.items.length,
-        itemBuilder: (_, i) => TextButton(
-          onPressed: () => _showItemDialog(provider.items[i]),
-
-          // context);
-          // onPressed: () {
-          // _showItemDialog(provider.items[i],
-          // },
-          child: Card(
-            elevation: 3,
-            margin: const EdgeInsets.symmetric(vertical: 2),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(provider.items[i].name),
-                const Spacer(),
-                IconButton(
-                  onPressed: () => _delete(provider.items[i]),
-                  icon: Icon(Icons.delete),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          itemCount: provider.items.length,
+          itemBuilder: (_, i) {
+            final item = provider.items[i];
+            return Card(
+              margin: const EdgeInsets.symmetric(vertical: 4),
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ListTile(
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                title: Text(
+                  item.name,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
-              ],
-            ),
-          ),
+                subtitle: Text(item.type),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                  onPressed: () => _delete(item),
+                ),
+                onTap: () => showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: Text(item.name),
+                    content: Text('Type: ${item.type}'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Close'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
