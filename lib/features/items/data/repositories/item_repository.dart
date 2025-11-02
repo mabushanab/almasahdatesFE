@@ -23,4 +23,8 @@ class ItemRepository {
 
   }
 
+  Future<void> updatePrice(String name, double price) async {
+    return await _service.updatePrice(name,price);
+  }
+
 }

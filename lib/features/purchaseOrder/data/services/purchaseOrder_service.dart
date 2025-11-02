@@ -79,6 +79,20 @@ class PurchaseOrderService {
     return response.body;
   }
 
+
+  Future<void> payRemain(String pOId) async {
+    final url = Uri.parse(
+      '$baseUrl/purchaseOrder/payRemainAmount',
+    ).replace(queryParameters: {'pOId': pOId});
+    String? token = await _authService.getToken();
+    await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+  }
   // GET PDF Invoice (cross-platform)
   Future<void> getInvoice(String pOId) async {
     final url = '$baseUrl/purchaseOrder/invoice';

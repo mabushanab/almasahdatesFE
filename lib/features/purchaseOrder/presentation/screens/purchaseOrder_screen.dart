@@ -53,6 +53,8 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
   Future<void> _getInvoice(String pOId) async =>
       context.read<PurchaseOrderProvider>().getInvoice(pOId);
 
+Future<void> _payRemain(String pOId) async => context.read<PurchaseOrderProvider>().payRemain(pOId);
+
   // ==============================
   // 💬 Add Purchase Order Dialog
   // ==============================
@@ -300,6 +302,12 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
           ),
         ),
         actions: [
+          TextButton(
+            onPressed: () {
+              _payRemain(pOId);
+              Navigator.pop(context);},
+            child: const Text('Pay Remain'),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Close'),

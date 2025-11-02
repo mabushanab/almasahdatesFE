@@ -27,4 +27,8 @@ class PurchaseOrderRepository {
   Future<void> getInvoice(String name) async {
     return await _service.getInvoice(name);
   }
+
+    Future<void> payRemain(String name) async {
+    return await _service.payRemain(name);
+  }
 }

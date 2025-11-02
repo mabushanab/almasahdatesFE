@@ -16,6 +16,8 @@ class _ItemListScreenState extends State<ItemListScreen> {
   final _itemSubType = TextEditingController();
   final _itemDescr = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _formKey1 = GlobalKey<FormState>();
+  final _salePrice = TextEditingController();
 
   @override
   void initState() {
@@ -23,8 +25,9 @@ class _ItemListScreenState extends State<ItemListScreen> {
     Future.microtask(() => context.read<ItemProvider>().loadItems());
   }
 
-  Future<void> _refresh() async =>
-      context.read<ItemProvider>().loadItems();
+  Future<void> _refresh() async => context.read<ItemProvider>().loadItems();
+
+  Future<void> _updatePrice(String name, double price) async => context.read<ItemProvider>().updatePrice(name,price);
 
   Future<void> _addItem(Item item) async =>
       context.read<ItemProvider>().addItem(item);
@@ -44,7 +47,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
               children: [
                 _field(_itemName, 'Name', requiredField: true),
                 _field(_itemType, 'Type', requiredField: true),
-                _field(_itemSubType, 'SubType'),
+                _field(_itemSubType, 'SubType', requiredField: false),
                 _field(_itemDescr, 'Description'),
               ],
             ),
@@ -54,7 +57,14 @@ class _ItemListScreenState extends State<ItemListScreen> {
           ElevatedButton.icon(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                _addItem(Item(name: _itemName.text, type: _itemType.text));
+                _addItem(
+                  Item(
+                    name: _itemName.text,
+                    type: _itemType.text,
+                    subType: _itemSubType.text,
+                    salePrice: double.parse(_salePrice.text),
+                  ),
+                );
                 Navigator.pop(context);
               }
             },
@@ -70,8 +80,11 @@ class _ItemListScreenState extends State<ItemListScreen> {
     );
   }
 
-  Widget _field(TextEditingController c, String label,
-      {bool requiredField = false}) {
+  Widget _field(
+    TextEditingController c,
+    String label, {
+    bool requiredField = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: TextFormField(
@@ -113,16 +126,62 @@ class _ItemListScreenState extends State<ItemListScreen> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: ListTile(
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
                 title: Text(
                   item.name,
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 subtitle: Text(item.type),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                  onPressed: () => _delete(item),
+                trailing: SizedBox(
+                  width: 100,
+                  height: 40,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.price_change_rounded,
+                          color: Color.fromARGB(255, 45, 128, 13),
+                        ),
+                        onPressed: () => showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: Text(item.name),
+                            content: SingleChildScrollView(
+                              child: Form(
+                                key: _formKey1,
+                                child: _field(_salePrice, 'Price',requiredField: true),
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  _updatePrice(item.name, double.parse(_salePrice.text));
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Update'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Close'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.delete_outline,
+                          color: Colors.redAccent,
+                        ),
+                        onPressed: () => _delete(item),
+                      ),
+                    ],
+                  ),
                 ),
                 onTap: () => showDialog(
                   context: context,

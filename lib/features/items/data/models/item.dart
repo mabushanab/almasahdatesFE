@@ -2,14 +2,18 @@
 class Item {
   final String name;
   final String type;
+  String? subType;
+  final double salePrice;
 
-  Item({required this.name, required this.type});
+  Item({required this.name, required this.type, required this.subType,
+  required this.salePrice});
 
   factory Item.fromJson(Map<String, dynamic> json) => Item(
-        name: json['name'],
-        // price: (json['price'] as num).toDouble(),
-        type: json['type'],
-        // type: json['name'],
+    name: json['name'],
+    type: json['type'],
+    subType: json['subType'],
+    salePrice: json['salePrice'] as double
 
-      );
+    // type: json['name'],
+  );
 }

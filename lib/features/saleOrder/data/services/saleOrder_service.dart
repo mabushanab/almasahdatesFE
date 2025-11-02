@@ -79,6 +79,22 @@ class SaleOrderService {
     return response.body;
   }
 
+  // GET Product Price
+  Future<String> getProductPrice(String productName) async {
+    final url = Uri.parse('$baseUrl/saleOrder/productPrice')
+        .replace(queryParameters: {'productName': productName});
+    String? token = await _authService.getToken();
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    print(response.body);
+    return response.body;
+  }
+
   // GET PDF Invoice (cross-platform)
   Future<void> getInvoice(String sOId) async {
     final url = '$baseUrl/saleOrder/invoice';

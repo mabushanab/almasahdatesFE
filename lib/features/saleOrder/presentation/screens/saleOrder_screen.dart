@@ -46,6 +46,9 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
   Future<String> _getMaxProductPrice(String name) async =>
       context.read<SaleOrderProvider>().getMaxProductPrice(name);
 
+  Future<String> _getProductPrice(String name) async =>
+      context.read<SaleOrderProvider>().getProductPrice(name);
+
   Future<void> _addSaleOrder(SaleOrder order) async =>
       context.read<SaleOrderProvider>().addSaleOrder(order);
 
@@ -216,8 +219,8 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                   onChanged: (i) async {
                     setState(() => selectedItem = i);
                     p.itemName = i!.name;
-                    _priceForItem.text = await _getMaxProductPrice(i.name);
-                    p.priceForItem = double.parse(_priceForItem.text);
+                    _priceForItem.text = await _getProductPrice(i.name);
+                    p.priceForItem = double.tryParse(_priceForItem.text) ?? 0.0;
                   },
                   validator: (v) => v == null ? "Item required" : null,
                 ),

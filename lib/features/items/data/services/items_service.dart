@@ -6,15 +6,7 @@ import 'package:almasah_dates/features/items/data/models/item.dart';
 import 'package:http/http.dart' as http;
 
 class ItemService {
-  // final String baseUrl = 'http://localhost:9090/item'; // for Android emulator
   final _authService = AuthService();
-  // final String token = _authService.getToken();
-
-  // String _loadToken() async {
-  //   String? token = await _authService.getToken();
-  //   return token;
-  // }
-
   Future<List> list() async {
     final url = Uri.parse('$baseUrl/list');
     final response = await http.get(
@@ -40,15 +32,13 @@ class ItemService {
   Future<void> deleteItem(String name) async {
     final url = Uri.parse('$baseUrl/item/$name');
     String? token = await _authService.getToken();
-    final response = await http.delete(
+    await http.delete(
       url,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
     );
-    print(response.body);
-    // return jsonDecode(response.body);
   }
 
   Future<List<Item>> fetchItems() async {
@@ -73,40 +63,29 @@ class ItemService {
   Future<void> addItem(Item item) async {
     final url = Uri.parse('$baseUrl/item/create');
     String? token = await _authService.getToken();
-    print(jsonEncode({'name': item.name, 'type': item.type}));
-    final response = await http.post(
+    await http.post(
       url,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({'name': item.name, 'type': item.type})
+      body: jsonEncode({'name': item.name, 'type': item.type}),
     );
-    print(response.body);
-    // return jsonDecode(response.body);
+  }
+
+  Future<void> updatePrice(String name, double price) async {
+    final url = Uri.parse(
+      '$baseUrl/item/setSalePrice',
+    ).replace(queryParameters: {'name': name, 'price': price.toString()});
+    
+    String? token = await _authService.getToken();
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    print(response);
   }
 }
-//   Future<bool> login(String username, String password) async {
-//     final url = Uri.parse('$baseUrl/auth/login');
-//     final response = await http.post(
-//       url,
-//       headers: {'Content-Type': 'application/json'},
-//       body: jsonEncode({'username': username, 'password': password}),
-//     );
-
-//     if (response.statusCode == 200) {
-//       final data = jsonDecode(response.body);
-//       await storage.write(key: 'token', value: data['token']);
-//       return true;
-//     }
-//     return false;
-//   }
-
-//   Future<String?> getToken() async {
-//     return await storage.read(key: 'token');
-//   }
-
-//   Future<void> logout() async {
-//     await storage.delete(key: 'token');
-//   }
-// }

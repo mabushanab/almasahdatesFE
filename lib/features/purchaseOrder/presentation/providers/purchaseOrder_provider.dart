@@ -1,4 +1,6 @@
 // providers/purchaseOrder_provider.dart
+import 'dart:js_interop';
+
 import 'package:flutter/foundation.dart';
 
 import '../../data/models/purchaseOrder.dart';
@@ -64,4 +66,15 @@ class PurchaseOrderProvider extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+  Future<void> payRemain(String name) async {
+    isLoading = true;
+    notifyListeners();
+
+    await _repo.payRemain(name);
+    loadPurchaseOrders();
+
+    isLoading = false;
+    notifyListeners();
+  }
+
 }

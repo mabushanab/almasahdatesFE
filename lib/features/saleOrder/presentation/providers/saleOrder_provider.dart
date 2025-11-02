@@ -52,7 +52,17 @@ class SaleOrderProvider extends ChangeNotifier {
     notifyListeners();
     return s;
   }
+  Future<String> getProductPrice(String goodsName) async {
+    isLoading = true;
+    notifyListeners();
 
+    String s =await _repo.getProductPrice(goodsName);
+    loadSaleOrders();
+
+    isLoading = false;
+    notifyListeners();
+    return s;
+  }
   Future<void> getInvoice(String name) async {
     isLoading = true;
     notifyListeners();
