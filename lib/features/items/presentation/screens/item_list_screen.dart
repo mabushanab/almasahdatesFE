@@ -27,7 +27,12 @@ class _ItemListScreenState extends State<ItemListScreen> {
 
   Future<void> _refresh() async => context.read<ItemProvider>().loadItems();
 
-  Future<void> _updatePrice(String name, double price) async => context.read<ItemProvider>().updatePrice(name,price);
+  Future<void> _updatePrice(String name, double price) async =>
+      context.read<ItemProvider>().updatePrice(name, price);
+
+  Future<double> _getPrice(String name) async {
+    return context.read<ItemProvider>().getPrice(name);
+  }
 
   Future<void> _addItem(Item item) async =>
       context.read<ItemProvider>().addItem(item);
@@ -145,33 +150,46 @@ class _ItemListScreenState extends State<ItemListScreen> {
                           Icons.price_change_rounded,
                           color: Color.fromARGB(255, 45, 128, 13),
                         ),
-                        onPressed: () => showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title: Text(item.name),
-                            content: SingleChildScrollView(
-                              child: Form(
-                                key: _formKey1,
-                                child: _field(_salePrice, 'Price',requiredField: true),
+                        onPressed: () async {
+                            _salePrice.text = (await _getPrice(item.name)).toString();
+                            showDialog(
+                              context: context,
+                              builder: (context) => StatefulBuilder(
+                                builder: (context, setState) => AlertDialog(
+                                  title: Text(item.name),
+                                  content: SingleChildScrollView(
+                                    child: Form(
+                                      key: _formKey1,
+                                      child: _field(
+                                        _salePrice,
+                                        'Price',
+                                        requiredField: true,
+                                      ),
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        _updatePrice(
+                                          item.name,
+                                          double.parse(_salePrice.text),
+                                        );
+                                        Navigator.pop(context);
+                                        setState(() {});
+                                      },
+                                      child: const Text('Update'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('Close'),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  _updatePrice(item.name, double.parse(_salePrice.text));
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('Update'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('Close'),
-                              ),
-                            ],
-                          ),
-                        ),
+                            );
+                        },
                       ),
                       IconButton(
                         icon: const Icon(

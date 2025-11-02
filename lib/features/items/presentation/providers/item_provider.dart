@@ -48,4 +48,13 @@ class ItemProvider extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
+    Future<double> getPrice(String name) async {
+    isLoading = true;
+    notifyListeners();
+    final f = await _repo.getPrice(name);
+    isLoading = false;
+    notifyListeners();
+    return f;
+  }
 }

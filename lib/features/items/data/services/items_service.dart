@@ -79,13 +79,29 @@ class ItemService {
     ).replace(queryParameters: {'name': name, 'price': price.toString()});
     
     String? token = await _authService.getToken();
-    final response = await http.get(
+    await http.get(
       url,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
     );
-    print(response);
+  }
+
+    Future<double> getPrice(String name) async {
+    final url = Uri.parse(
+      '$baseUrl/item/getSalePrice',
+    ).replace(queryParameters: {'name': name});
+    
+    String? token = await _authService.getToken();
+    final response =await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    print(jsonDecode(response.body));
+    return double.parse(response.body);
   }
 }

@@ -14,25 +14,26 @@ class SaleOrderRepository {
   }
 
   Future<void> addSaleOrder(SaleOrder saleOrder) async {
-
     return await _service.addSaleOrder(saleOrder);
   }
 
   Future<String> getMaxProductPrice(String goodsName) async {
-
     return await _service.getMaxProductPrice(goodsName);
   }
 
   Future<String> getProductPrice(String goodsName) async {
-
     return await _service.getProductPrice(goodsName);
   }
+
   Future<void> deleteSaleOrder(String name) async {
     return await _service.deleteSaleOrder(name);
-
   }
+
   Future<void> getInvoice(String name) async {
     return await _service.getInvoice(name);
+  }
 
+  Future<void> payRemain(String name) async {
+    return await _service.payRemain(name);
   }
 }

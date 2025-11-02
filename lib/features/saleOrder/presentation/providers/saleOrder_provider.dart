@@ -45,29 +45,42 @@ class SaleOrderProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    String s =await _repo.getMaxProductPrice(goodsName);
+    String s = await _repo.getMaxProductPrice(goodsName);
     loadSaleOrders();
 
     isLoading = false;
     notifyListeners();
     return s;
   }
+
   Future<String> getProductPrice(String goodsName) async {
     isLoading = true;
     notifyListeners();
 
-    String s =await _repo.getProductPrice(goodsName);
+    String s = await _repo.getProductPrice(goodsName);
     loadSaleOrders();
 
     isLoading = false;
     notifyListeners();
     return s;
   }
+
   Future<void> getInvoice(String name) async {
     isLoading = true;
     notifyListeners();
 
     await _repo.getInvoice(name);
+    loadSaleOrders();
+
+    isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> payRemain(String name) async {
+    isLoading = true;
+    notifyListeners();
+
+    await _repo.payRemain(name);
     loadSaleOrders();
 
     isLoading = false;

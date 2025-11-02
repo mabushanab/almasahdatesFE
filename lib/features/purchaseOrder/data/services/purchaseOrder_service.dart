@@ -82,7 +82,7 @@ class PurchaseOrderService {
 
   Future<void> payRemain(String pOId) async {
     final url = Uri.parse(
-      '$baseUrl/purchaseOrder/payRemainAmount',
+      '$baseUrl/purchaseOrder/payAllRemainAmount',
     ).replace(queryParameters: {'pOId': pOId});
     String? token = await _authService.getToken();
     await http.get(

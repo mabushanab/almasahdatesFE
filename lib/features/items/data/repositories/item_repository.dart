@@ -27,4 +27,8 @@ class ItemRepository {
     return await _service.updatePrice(name,price);
   }
 
+    Future<double> getPrice(String name) async {
+    return await _service.getPrice(name);
+  }
+
 }

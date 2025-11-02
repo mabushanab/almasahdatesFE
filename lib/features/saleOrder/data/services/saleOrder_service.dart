@@ -66,8 +66,9 @@ class SaleOrderService {
 
   // GET Max Product Price
   Future<String> getMaxProductPrice(String productName) async {
-    final url = Uri.parse('$baseUrl/saleOrder/productMinPrice')
-        .replace(queryParameters: {'productName': productName});
+    final url = Uri.parse(
+      '$baseUrl/saleOrder/productMinPrice',
+    ).replace(queryParameters: {'productName': productName});
     String? token = await _authService.getToken();
     final response = await http.get(
       url,
@@ -81,8 +82,9 @@ class SaleOrderService {
 
   // GET Product Price
   Future<String> getProductPrice(String productName) async {
-    final url = Uri.parse('$baseUrl/saleOrder/productPrice')
-        .replace(queryParameters: {'productName': productName});
+    final url = Uri.parse(
+      '$baseUrl/saleOrder/productPrice',
+    ).replace(queryParameters: {'productName': productName});
     String? token = await _authService.getToken();
     final response = await http.get(
       url,
@@ -93,6 +95,20 @@ class SaleOrderService {
     );
     print(response.body);
     return response.body;
+  }
+
+  Future<void> payRemain(String sOId) async {
+    final url = Uri.parse(
+      '$baseUrl/saleOrder/payAllRemainAmount',
+    ).replace(queryParameters: {'sOId': sOId});
+    String? token = await _authService.getToken();
+    await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
   }
 
   // GET PDF Invoice (cross-platform)

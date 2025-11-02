@@ -37,7 +37,8 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
     });
   }
 
-  bool _validateSO() => _formKey.currentState!.validate() && products.isNotEmpty;
+  bool _validateSO() =>
+      _formKey.currentState!.validate() && products.isNotEmpty;
   bool _validateItem() => _formKey1.currentState!.validate();
 
   Future<void> _refresh() async =>
@@ -55,6 +56,8 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
   Future<void> _getInvoice(String name) async =>
       context.read<SaleOrderProvider>().getInvoice(name);
 
+  Future<void> _payRemain(String sOId) async =>
+      context.read<SaleOrderProvider>().payRemain(sOId);
   // ==============================
   // 💬 Add Sale Order Dialog
   // ==============================
@@ -74,26 +77,27 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
           title: const Text('Add Sale Order'),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           content: SingleChildScrollView(
             child: Form(
               key: _formKey,
               child: Column(
                 children: [
                   DropdownButtonFormField<Customer>(
-                    decoration:
-                        const InputDecoration(labelText: 'Customer Name'),
+                    decoration: const InputDecoration(
+                      labelText: 'Customer Name',
+                    ),
                     value: selectedCustomer,
                     items: customerProvider.customers
-                        .map((c) => DropdownMenuItem(
-                              value: c,
-                              child: Text(c.name),
-                            ))
+                        .map(
+                          (c) =>
+                              DropdownMenuItem(value: c, child: Text(c.name)),
+                        )
                         .toList(),
                     onChanged: (c) => setState(() => selectedCustomer = c),
-                    validator: (v) =>
-                        v == null ? "Customer is required" : null,
+                    validator: (v) => v == null ? "Customer is required" : null,
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
@@ -137,8 +141,9 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                             setState(() {
                               sum -= (g.priceForItem * g.quantity);
                               products.remove(g);
-                              _totalPrice.text =
-                                  (sum.toStringAsFixed(2)).toString();
+                              _totalPrice.text = (sum.toStringAsFixed(
+                                2,
+                              )).toString();
                             });
                           },
                         ),
@@ -159,8 +164,7 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                     SaleOrder(
                       customerName: selectedCustomer!.name,
                       totalPrice: double.parse(_totalPrice.text),
-                      remainAmount:
-                          double.tryParse(_remainAmount.text) ?? 0.0,
+                      remainAmount: double.tryParse(_remainAmount.text) ?? 0.0,
                       products: products,
                     ),
                   );
@@ -200,8 +204,9 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
           title: const Text('Add Product'),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           content: Form(
             key: _formKey1,
             child: Column(
@@ -211,10 +216,9 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                   decoration: const InputDecoration(labelText: 'Item'),
                   value: selectedItem,
                   items: itemProvider.items
-                      .map((i) => DropdownMenuItem(
-                            value: i,
-                            child: Text(i.name),
-                          ))
+                      .map(
+                        (i) => DropdownMenuItem(value: i, child: Text(i.name)),
+                      )
                       .toList(),
                   onChanged: (i) async {
                     setState(() => selectedItem = i);
@@ -227,16 +231,16 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _priceForItem,
-                  decoration:
-                      const InputDecoration(labelText: 'Price per Item'),
+                  decoration: const InputDecoration(
+                    labelText: 'Price per Item',
+                  ),
                   keyboardType: TextInputType.number,
-                  onChanged: (v) =>
-                      p.priceForItem = double.tryParse(v) ?? 0.0,
+                  onChanged: (v) => p.priceForItem = double.tryParse(v) ?? 0.0,
                   validator: (v) => (v == null || v.isEmpty)
                       ? "Price required"
                       : double.tryParse(v) == null
-                          ? "Invalid number"
-                          : null,
+                      ? "Invalid number"
+                      : null,
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
@@ -246,13 +250,12 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                   validator: (v) => (v == null || v.isEmpty)
                       ? "Quantity required"
                       : int.tryParse(v) == null
-                          ? "Invalid number"
-                          : null,
+                      ? "Invalid number"
+                      : null,
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  decoration:
-                      const InputDecoration(labelText: 'Discount (%)'),
+                  decoration: const InputDecoration(labelText: 'Discount (%)'),
                   keyboardType: TextInputType.number,
                   onChanged: (v) => p.boxCost = double.tryParse(v) ?? 0.0,
                 ),
@@ -287,7 +290,7 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
   // ==============================
   // 🧾 Show Sale Order Details
   // ==============================
-  Future<void> _showSaleOrderDialog(List<Product> products,String sOId) async {
+  Future<void> _showSaleOrderDialog(List<Product> products, String sOId) async {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -304,21 +307,30 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                 ],
               ),
               const Divider(),
-              ...products.map((p) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(p.itemName),
-                        Text('${p.priceForItem}'),
-                        Text('${p.quantity}'),
-                      ],
-                    ),
-                  )),
+              ...products.map(
+                (p) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(p.itemName),
+                      Text('${p.priceForItem}'),
+                      Text('${p.quantity}'),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
         actions: [
+          TextButton(
+            onPressed: () {
+              _payRemain(sOId);
+              Navigator.pop(context);
+            },
+            child: const Text('Pay Remain'),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Close'),
@@ -343,8 +355,7 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
         actions: [
           IconButton(onPressed: _refresh, icon: const Icon(Icons.refresh)),
           IconButton(
-            onPressed: () =>
-                _showAddSaleOrderDialog(context, customers, items),
+            onPressed: () => _showAddSaleOrderDialog(context, customers, items),
             icon: const Icon(Icons.add),
           ),
         ],
@@ -363,12 +374,16 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: ListTile(
-                onTap: () => _showSaleOrderDialog(so.products,so.sOId?? ''),
+                onTap: () => _showSaleOrderDialog(so.products, so.sOId ?? ''),
                 title: Text(so.customerName),
-                subtitle: Text('${so.date} •  Total: ${so.totalPrice} • Remain: ${so.remainAmount}'),
+                subtitle: Text(
+                  '${so.date} •  Total: ${so.totalPrice} • Remain: ${so.remainAmount}',
+                ),
                 trailing: IconButton(
-                  icon: const Icon(Icons.picture_as_pdf,
-                      color: Colors.redAccent),
+                  icon: const Icon(
+                    Icons.picture_as_pdf,
+                    color: Colors.redAccent,
+                  ),
                   onPressed: () => _getInvoice(so.sOId ?? ''),
                 ),
               ),

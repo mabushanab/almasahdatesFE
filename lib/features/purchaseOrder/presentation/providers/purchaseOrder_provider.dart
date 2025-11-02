@@ -1,6 +1,4 @@
 // providers/purchaseOrder_provider.dart
-import 'dart:js_interop';
-
 import 'package:flutter/foundation.dart';
 
 import '../../data/models/purchaseOrder.dart';
