@@ -43096,7 +43096,7 @@ A.ib.prototype={
 p7(a,b,c){return this.asp(0,b,c)},
 asp(a,b,c){var s=0,r=A.w(t.y),q,p,o,n
 var $async$p7=A.r(function(d,e){if(d===1)return A.t(e,r)
-while(true)switch(s){case 0:p=A.cq("http://localhost:9090/api/auth/register")
+while(true)switch(s){case 0:p=A.cq("https://almasahdates.com/api/auth/register")
 o=t.N
 n=A.a1(["Content-Type","application/json"],o,o)
 s=3
@@ -43109,7 +43109,7 @@ return A.v($async$p7,r)},
 vF(a,b){return this.aqi(a,b)},
 aqi(a,b){var s=0,r=A.w(t.y),q,p,o,n,m
 var $async$vF=A.r(function(c,d){if(c===1)return A.t(d,r)
-while(true)switch(s){case 0:p=A.cq("http://localhost:9090/api/auth/login")
+while(true)switch(s){case 0:p=A.cq("https://almasahdates.com/api/auth/login")
 o=t.N
 n=A.a1(["Content-Type","application/json"],o,o)
 s=3
@@ -43296,7 +43296,7 @@ amL(a){var s=0,r=A.w(t.H),q=this,p,o,n,m,l,k,j,i,h
 var $async$hk=A.r(function(b,c){if(b===1)return A.t(c,r)
 while(true)switch(s){case 0:p=t.N
 n=A
-m=A.cq("http://localhost:9090/api/customer/"+a)
+m=A.cq("https://almasahdates.com/api/customer/"+a)
 l=A
 k="Content-Type"
 j="application/json"
@@ -43317,7 +43317,7 @@ return A.x(p.a.dj(),$async$uY)
 case 3:m=b
 l=t.N
 s=4
-return A.x(A.jR(A.cq("http://localhost:9090/api/customer/list"),A.a1(["Content-Type","application/json","Authorization","Bearer "+A.l(m)],l,l)),$async$uY)
+return A.x(A.jR(A.cq("https://almasahdates.com/api/customer/list"),A.a1(["Content-Type","application/json","Authorization","Bearer "+A.l(m)],l,l)),$async$uY)
 case 4:k=b
 if(k.b===200){l=k.e
 o=A.es(A.er(l))
@@ -43333,7 +43333,7 @@ return A.v($async$uY,r)},
 hb(a){return this.ajP(a)},
 ajP(a){var s=0,r=A.w(t.H),q=this,p,o,n,m,l,k,j
 var $async$hb=A.r(function(b,c){if(b===1)return A.t(c,r)
-while(true)switch(s){case 0:n=A.cq("http://localhost:9090/api/customer/create")
+while(true)switch(s){case 0:n=A.cq("https://almasahdates.com/api/customer/create")
 s=2
 return A.x(q.a.dj(),$async$hb)
 case 2:m=c
@@ -43511,7 +43511,7 @@ return A.x(p.b.dj(),$async$uZ)
 case 3:o=b
 n=t.N
 s=4
-return A.x(A.jR(A.cq("http://localhost:9090/api/home/CDD"),A.a1(["Content-Type","application/json","Authorization","Bearer "+A.l(o)],n,n)),$async$uZ)
+return A.x(A.jR(A.cq("https://almasahdates.com/api/home/CDD"),A.a1(["Content-Type","application/json","Authorization","Bearer "+A.l(o)],n,n)),$async$uZ)
 case 4:m=b
 if(m.b===200){q=A.aQz(B.af.lq(0,A.es(A.er(m.e)).c6(0,m.w),null))
 s=1
@@ -43709,7 +43709,7 @@ amO(a){var s=0,r=A.w(t.H),q=this,p,o,n,m,l,k,j,i
 var $async$hl=A.r(function(b,c){if(b===1)return A.t(c,r)
 while(true)switch(s){case 0:p=t.N
 o=A
-n=A.cq("http://localhost:9090/api/item/"+a)
+n=A.cq("https://almasahdates.com/api/item/"+a)
 m=A
 l="Content-Type"
 k="application/json"
@@ -43728,7 +43728,7 @@ return A.x(p.a.dj(),$async$v_)
 case 3:o=b
 n=t.N
 s=4
-return A.x(A.jR(A.cq("http://localhost:9090/api/item/list"),A.a1(["Content-Type","application/json","Authorization","Bearer "+A.l(o)],n,n)),$async$v_)
+return A.x(A.jR(A.cq("https://almasahdates.com/api/item/list"),A.a1(["Content-Type","application/json","Authorization","Bearer "+A.l(o)],n,n)),$async$v_)
 case 4:m=b
 if(m.b===200){n=J.ex(B.af.lq(0,A.es(A.er(m.e)).c6(0,m.w),null),new A.a9K(),t.LN)
 n=A.a6(n,n.$ti.i("au.E"))
@@ -43740,7 +43740,7 @@ return A.v($async$v_,r)},
 hc(a){return this.ajT(a)},
 ajT(a){var s=0,r=A.w(t.H),q=this,p,o,n,m,l,k,j,i
 var $async$hc=A.r(function(b,c){if(b===1)return A.t(c,r)
-while(true)switch(s){case 0:p=A.cq("http://localhost:9090/api/item/create")
+while(true)switch(s){case 0:p=A.cq("https://almasahdates.com/api/item/create")
 o=t.N
 m=A
 l="Content-Type"
@@ -43759,7 +43759,7 @@ atw(a,b){var s=0,r=A.w(t.H),q=this,p,o,n,m,l,k,j,i
 var $async$hw=A.r(function(c,d){if(c===1)return A.t(d,r)
 while(true)switch(s){case 0:p=t.N
 o=A
-n=A.cq("http://localhost:9090/api/item/setSalePrice").p9(0,A.a1(["name",a,"price",B.d.k(b)],p,t.z))
+n=A.cq("https://almasahdates.com/api/item/setSalePrice").p9(0,A.a1(["name",a,"price",B.d.k(b)],p,t.z))
 m=A
 l="Content-Type"
 k="application/json"
@@ -43776,7 +43776,7 @@ ZU(a){var s=0,r=A.w(t.i),q,p=this,o,n,m,l,k,j,i,h,g,f,e
 var $async$h6=A.r(function(b,c){if(b===1)return A.t(c,r)
 while(true)switch(s){case 0:m=t.N
 k=A
-j=A.cq("http://localhost:9090/api/item/getSalePrice").p9(0,A.a1(["name",a],m,t.z))
+j=A.cq("https://almasahdates.com/api/item/getSalePrice").p9(0,A.a1(["name",a],m,t.z))
 i=A
 h="Content-Type"
 g="application/json"
@@ -44047,7 +44047,7 @@ amR(a){var s=0,r=A.w(t.H),q=this,p,o,n,m,l,k,j,i,h
 var $async$hm=A.r(function(b,c){if(b===1)return A.t(c,r)
 while(true)switch(s){case 0:p=t.N
 n=A
-m=A.cq("http://localhost:9090/api/merchant/"+a)
+m=A.cq("https://almasahdates.com/api/merchant/"+a)
 l=A
 k="Content-Type"
 j="application/json"
@@ -44068,7 +44068,7 @@ return A.x(p.a.dj(),$async$v0)
 case 3:m=b
 l=t.N
 s=4
-return A.x(A.jR(A.cq("http://localhost:9090/api/merchant/list"),A.a1(["Content-Type","application/json","Authorization","Bearer "+A.l(m)],l,l)),$async$v0)
+return A.x(A.jR(A.cq("https://almasahdates.com/api/merchant/list"),A.a1(["Content-Type","application/json","Authorization","Bearer "+A.l(m)],l,l)),$async$v0)
 case 4:k=b
 if(k.b===200){l=k.e
 o=A.es(A.er(l))
@@ -44084,7 +44084,7 @@ return A.v($async$v0,r)},
 hd(a){return this.ajX(a)},
 ajX(a){var s=0,r=A.w(t.H),q=this,p,o,n,m,l,k,j
 var $async$hd=A.r(function(b,c){if(b===1)return A.t(c,r)
-while(true)switch(s){case 0:n=A.cq("http://localhost:9090/api/merchant/create")
+while(true)switch(s){case 0:n=A.cq("https://almasahdates.com/api/merchant/create")
 s=2
 return A.x(q.a.dj(),$async$hd)
 case 2:m=c
@@ -44302,7 +44302,7 @@ return A.x(p.a.dj(),$async$v1)
 case 3:o=b
 n=t.N
 s=4
-return A.x(A.jR(A.cq("http://localhost:9090/api/purchaseOrder/list"),A.a1(["Content-Type","application/json","Authorization","Bearer "+A.l(o)],n,n)),$async$v1)
+return A.x(A.jR(A.cq("https://almasahdates.com/api/purchaseOrder/list"),A.a1(["Content-Type","application/json","Authorization","Bearer "+A.l(o)],n,n)),$async$v1)
 case 4:m=b
 if(m.b===200){n=J.ex(B.af.lq(0,A.es(A.er(m.e)).c6(0,m.w),null),new A.afB(),t.YU)
 n=A.a6(n,n.$ti.i("au.E"))
@@ -44314,7 +44314,7 @@ return A.v($async$v1,r)},
 he(a){return this.ak1(a)},
 ak1(a){var s=0,r=A.w(t.H),q=this,p,o,n,m,l,k,j,i
 var $async$he=A.r(function(b,c){if(b===1)return A.t(c,r)
-while(true)switch(s){case 0:o=A.cq("http://localhost:9090/api/purchaseOrder/create")
+while(true)switch(s){case 0:o=A.cq("https://almasahdates.com/api/purchaseOrder/create")
 n=t.N
 m=A
 l="Content-Type"
@@ -44335,7 +44335,7 @@ ZK(a){var s=0,r=A.w(t.N),q,p=this,o,n,m,l,k,j,i,h,g
 var $async$h5=A.r(function(b,c){if(b===1)return A.t(c,r)
 while(true)switch(s){case 0:o=t.N
 m=A
-l=A.cq("http://localhost:9090/api/purchaseOrder/goodsMinPrice").p9(0,A.a1(["goodsName",a],o,t.z))
+l=A.cq("https://almasahdates.com/api/purchaseOrder/goodsMinPrice").p9(0,A.a1(["goodsName",a],o,t.z))
 k=A
 j="Content-Type"
 i="application/json"
@@ -44356,7 +44356,7 @@ arX(a){var s=0,r=A.w(t.H),q=this,p,o,n,m,l,k,j,i
 var $async$cM=A.r(function(b,c){if(b===1)return A.t(c,r)
 while(true)switch(s){case 0:p=t.N
 o=A
-n=A.cq("http://localhost:9090/api/purchaseOrder/payAllRemainAmount").p9(0,A.a1(["pOId",a],p,t.z))
+n=A.cq("https://almasahdates.com/api/purchaseOrder/payAllRemainAmount").p9(0,A.a1(["pOId",a],p,t.z))
 m=A
 l="Content-Type"
 k="application/json"
@@ -44371,7 +44371,7 @@ return A.v($async$cM,r)},
 cr(a){return this.ZB(a)},
 ZB(a){var s=0,r=A.w(t.H),q=1,p=[],o=this,n,m,l,k,j,i,h,g,f,e,d
 var $async$cr=A.r(function(b,c){if(b===1){p.push(c)
-s=q}while(true)switch(s){case 0:f="http://localhost:9090/api/purchaseOrder/invoice"
+s=q}while(true)switch(s){case 0:f="https://almasahdates.com/api/purchaseOrder/invoice"
 s=2
 return A.x(o.a.dj(),$async$cr)
 case 2:e=c
@@ -44803,7 +44803,7 @@ return A.x(p.a.dj(),$async$v2)
 case 3:o=b
 n=t.N
 s=4
-return A.x(A.jR(A.cq("http://localhost:9090/api/saleOrder/list"),A.a1(["Content-Type","application/json","Authorization","Bearer "+A.l(o)],n,n)),$async$v2)
+return A.x(A.jR(A.cq("https://almasahdates.com/api/saleOrder/list"),A.a1(["Content-Type","application/json","Authorization","Bearer "+A.l(o)],n,n)),$async$v2)
 case 4:m=b
 if(m.b===200){n=J.ex(B.af.lq(0,A.es(A.er(m.e)).c6(0,m.w),null),new A.aht(),t.zu)
 n=A.a6(n,n.$ti.i("au.E"))
@@ -44815,7 +44815,7 @@ return A.v($async$v2,r)},
 hf(a){return this.ak4(a)},
 ak4(a){var s=0,r=A.w(t.H),q=this,p,o,n,m,l,k,j,i
 var $async$hf=A.r(function(b,c){if(b===1)return A.t(c,r)
-while(true)switch(s){case 0:o=A.cq("http://localhost:9090/api/saleOrder/create")
+while(true)switch(s){case 0:o=A.cq("https://almasahdates.com/api/saleOrder/create")
 n=t.N
 m=A
 l="Content-Type"
@@ -44836,7 +44836,7 @@ ZX(a){var s=0,r=A.w(t.N),q,p=this,o,n,m,l,k,j,i,h,g,f,e
 var $async$h7=A.r(function(b,c){if(b===1)return A.t(c,r)
 while(true)switch(s){case 0:m=t.N
 k=A
-j=A.cq("http://localhost:9090/api/saleOrder/productPrice").p9(0,A.a1(["productName",a],m,t.z))
+j=A.cq("https://almasahdates.com/api/saleOrder/productPrice").p9(0,A.a1(["productName",a],m,t.z))
 i=A
 h="Content-Type"
 g="application/json"
@@ -44861,7 +44861,7 @@ as_(a){var s=0,r=A.w(t.H),q=this,p,o,n,m,l,k,j,i
 var $async$cM=A.r(function(b,c){if(b===1)return A.t(c,r)
 while(true)switch(s){case 0:p=t.N
 o=A
-n=A.cq("http://localhost:9090/api/saleOrder/payAllRemainAmount").p9(0,A.a1(["sOId",a],p,t.z))
+n=A.cq("https://almasahdates.com/api/saleOrder/payAllRemainAmount").p9(0,A.a1(["sOId",a],p,t.z))
 m=A
 l="Content-Type"
 k="application/json"
@@ -44876,7 +44876,7 @@ return A.v($async$cM,r)},
 cr(a){return this.ZE(a)},
 ZE(a){var s=0,r=A.w(t.H),q=1,p=[],o=this,n,m,l,k,j,i,h,g,f,e,d
 var $async$cr=A.r(function(b,c){if(b===1){p.push(c)
-s=q}while(true)switch(s){case 0:f="http://localhost:9090/api/saleOrder/invoice"
+s=q}while(true)switch(s){case 0:f="https://almasahdates.com/api/saleOrder/invoice"
 s=2
 return A.x(o.a.dj(),$async$cr)
 case 2:e=c
