@@ -5,6 +5,7 @@ class Product {
   double priceForItem;
   int quantity;
   double boxCost;
+  int discount;
   String? notes;
 
   Product({
@@ -12,6 +13,7 @@ class Product {
     required this.priceForItem,
     required this.quantity,
     required this.boxCost,
+    required this.discount,
     this.notes,
   });
 
@@ -20,6 +22,7 @@ class Product {
     priceForItem: json['priceForItem'],
     quantity: json['quantity'],
     boxCost: json['boxCost'],
+    discount: json['discount'],
     notes: json['notes'],
   );
 
@@ -28,6 +31,7 @@ class Product {
     'priceForItem': priceForItem,
     'quantity': quantity,
     'boxCost': boxCost,
+    'discount': discount,
     'notes': notes,
   };
 }

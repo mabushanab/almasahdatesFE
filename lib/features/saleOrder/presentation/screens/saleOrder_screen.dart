@@ -133,13 +133,13 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                       child: ListTile(
                         title: Text(g.itemName),
                         subtitle: Text(
-                          'Price: ${g.priceForItem}, Qty: ${g.quantity}, Discount: ${g.boxCost}%',
+                          'Price: ${g.priceForItem}, Qty: ${g.quantity}, Discount: ${g.discount}%, Total: ${(g.priceForItem * g.quantity - ((g.priceForItem * g.quantity) * (g.discount / 100))).toStringAsFixed(2)}',
                         ),
                         trailing: IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
                             setState(() {
-                              sum -= (g.priceForItem * g.quantity);
+                              sum -= (g.priceForItem * g.quantity - ((g.priceForItem * g.quantity) * (g.discount / 100)));
                               products.remove(g);
                               _totalPrice.text = (sum.toStringAsFixed(
                                 2,
@@ -195,6 +195,7 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
       priceForItem: 0,
       quantity: 0,
       boxCost: 0,
+      discount: 0,
     );
     _priceForItem.clear();
     selectedItem = null;
@@ -257,7 +258,18 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                 TextFormField(
                   decoration: const InputDecoration(labelText: 'Discount (%)'),
                   keyboardType: TextInputType.number,
-                  onChanged: (v) => p.boxCost = double.tryParse(v) ?? 0.0,
+                  onChanged: (v) => p.discount = int.tryParse(v) ?? 0,
+                  validator: (v) {
+                    if (v == null || v.isEmpty) return 'Enter a number';
+                    final numValue = num.tryParse(v);
+                    if (numValue == null) return 'Not a valid number';
+                    if (numValue is int ||
+                        numValue == numValue.roundToDouble()) {
+                      return null;
+                    } else {
+                      return 'Must be a whole number';
+                    }
+                  },
                 ),
               ],
             ),
@@ -270,7 +282,7 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                 if (_validateItem()) {
                   parentSetState(() {
                     products.add(p);
-                    sum += (p.priceForItem * p.quantity);
+                    sum += (p.priceForItem * p.quantity - ((p.priceForItem * p.quantity) * (p.discount / 100)));
                     _totalPrice.text = sum.toStringAsFixed(2);
                   });
                   Navigator.pop(context);
