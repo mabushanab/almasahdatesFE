@@ -55,7 +55,7 @@ class _LandingPageState extends State<LandingPage> {
       alignment: WrapAlignment.center,
       children: [
         _summaryCard(
-          title: 'مبلغ الدين',
+          title: 'مبلغ الدين',        
           value: '${(provider.home.sumPORemain * 100).round() / 100} JOD',
           icon: Icons.money_off,
           color: Colors.redAccent,
