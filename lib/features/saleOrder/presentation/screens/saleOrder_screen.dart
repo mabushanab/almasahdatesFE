@@ -139,7 +139,10 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
                             setState(() {
-                              sum -= (g.priceForItem * g.quantity - ((g.priceForItem * g.quantity) * (g.discount / 100)));
+                              sum -=
+                                  (g.priceForItem * g.quantity -
+                                  ((g.priceForItem * g.quantity) *
+                                      (g.discount / 100)));
                               products.remove(g);
                               _totalPrice.text = (sum.toStringAsFixed(
                                 2,
@@ -260,11 +263,10 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                   keyboardType: TextInputType.number,
                   onChanged: (v) => p.discount = int.tryParse(v) ?? 0,
                   validator: (v) {
-                    if (v == null || v.isEmpty) return 'Enter a number';
-                    final numValue = num.tryParse(v);
+                    final text = (v == null || v.isEmpty) ? '0' : v;
+                    final numValue = num.tryParse(text);
                     if (numValue == null) return 'Not a valid number';
-                    if (numValue is int ||
-                        numValue == numValue.roundToDouble()) {
+                    if (numValue == numValue.roundToDouble()) {
                       return null;
                     } else {
                       return 'Must be a whole number';
@@ -282,7 +284,9 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
                 if (_validateItem()) {
                   parentSetState(() {
                     products.add(p);
-                    sum += (p.priceForItem * p.quantity - ((p.priceForItem * p.quantity) * (p.discount / 100)));
+                    sum +=
+                        (p.priceForItem * p.quantity -
+                        ((p.priceForItem * p.quantity) * (p.discount / 100)));
                     _totalPrice.text = sum.toStringAsFixed(2);
                   });
                   Navigator.pop(context);
