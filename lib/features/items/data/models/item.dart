@@ -14,6 +14,12 @@ class Item {
     subType: json['subType'],
     salePrice: json['salePrice'] as double
 
-    // type: json['name'],
   );
+
+    Map<String, dynamic> toJson() => {
+    'name': name,
+    'type': type,
+    'subType': subType,
+    'salePrice': salePrice,
+  };
 }

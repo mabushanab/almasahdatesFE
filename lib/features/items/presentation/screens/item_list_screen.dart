@@ -1,5 +1,6 @@
 import 'package:almasah_dates/features/items/data/models/item.dart';
 import 'package:almasah_dates/features/items/presentation/providers/item_provider.dart';
+import 'package:almasah_dates/features/items/presentation/screens/ItemAddDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -41,69 +42,13 @@ class _ItemListScreenState extends State<ItemListScreen> {
       context.read<ItemProvider>().deleteItem(item);
 
   Future<void> _showAddDialog() async {
-    await showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Add Item'),
-        content: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                _field(_itemName, 'Name', requiredField: true),
-                _field(_itemType, 'Type', requiredField: true),
-                _field(_itemSubType, 'SubType', requiredField: false),
-                _field(_itemDescr, 'Description'),
-              ],
-            ),
-          ),
-        ),
-        actions: [
-          ElevatedButton.icon(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                _addItem(
-                  Item(
-                    name: _itemName.text,
-                    type: _itemType.text,
-                    subType: _itemSubType.text,
-                    salePrice: double.parse(_salePrice.text),
-                  ),
-                );
-                Navigator.pop(context);
-              }
-            },
-            icon: const Icon(Icons.check),
-            label: const Text('Add'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-        ],
-      ),
-    );
-  }
+  await showDialog(
+    context: context,
+    builder: (_) => ItemAddDialog(),
+  );
+}
 
-  Widget _field(
-    TextEditingController c,
-    String label, {
-    bool requiredField = false,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: TextFormField(
-        controller: c,
-        decoration: InputDecoration(
-          labelText: label,
-          border: const OutlineInputBorder(),
-        ),
-        validator: requiredField
-            ? (v) => v == null || v.trim().isEmpty ? "$label is required" : null
-            : null,
-      ),
-    );
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -160,7 +105,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
                                   content: SingleChildScrollView(
                                     child: Form(
                                       key: _formKey1,
-                                      child: _field(
+                                      child: field(
                                         _salePrice,
                                         'Price',
                                         requiredField: true,

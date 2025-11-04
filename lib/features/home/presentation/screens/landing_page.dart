@@ -1,4 +1,5 @@
 import 'package:almasah_dates/features/home/presentation/providers/home_provider.dart';
+import 'package:almasah_dates/features/home/presentation/screens/floating_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,16 +33,14 @@ class _LandingPageState extends State<LandingPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // 🔹 Stats summary section
             _buildSummaryCards(provider, size),
-
             const SizedBox(height: 40),
-
-            // 🔹 Main menu
             _buildMenuGrid(context, size),
           ],
         ),
       ),
+      floatingActionButton: const DropUpFabMenu(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
     );
   }
 
@@ -55,7 +54,7 @@ class _LandingPageState extends State<LandingPage> {
       alignment: WrapAlignment.center,
       children: [
         _summaryCard(
-          title: 'مبلغ الدين',        
+          title: 'مبلغ الدين',
           value: '${(provider.home.sumPORemain * 100).round() / 100} JOD',
           icon: Icons.money_off,
           color: Colors.redAccent,
@@ -97,9 +96,15 @@ class _LandingPageState extends State<LandingPage> {
           children: [
             Icon(icon, color: color, size: 40),
             const SizedBox(height: 8),
-            Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 4),
-            Text(value, style: TextStyle(color: Colors.grey[700], fontSize: 14)),
+            Text(
+              value,
+              style: TextStyle(color: Colors.grey[700], fontSize: 14),
+            ),
           ],
         ),
       ),
@@ -110,11 +115,11 @@ class _LandingPageState extends State<LandingPage> {
   Widget _buildMenuGrid(BuildContext context, Size size) {
     final items = [
       {'title': 'المبيعات', 'icon': Icons.point_of_sale, 'index': 6},
-      {'title': 'الزبائن', 'icon': Icons.people, 'index': 3},
-      {'title': 'الأصناف', 'icon': Icons.category, 'index': 2},
+      {'title': 'الزبائن', 'icon': Icons.people, 'index': 8},
+      {'title': 'الأصناف', 'icon': Icons.category, 'index': 1},
       {'title': 'المشتريات', 'icon': Icons.shopping_cart_outlined, 'index': 5},
       {'title': 'الموردين', 'icon': Icons.store, 'index': 4},
-      {'title': 'التقارير', 'icon': Icons.bar_chart, 'index': 5},
+      {'title': 'التقارير', 'icon': Icons.bar_chart, 'index': 7},
     ];
 
     return GridView.builder(
@@ -154,7 +159,11 @@ class _LandingPageState extends State<LandingPage> {
             children: [
               Icon(icon, color: Colors.teal, size: 40),
               const SizedBox(height: 8),
-              Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 14)),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 14),
+              ),
             ],
           ),
         ),

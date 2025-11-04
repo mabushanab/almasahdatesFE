@@ -6,6 +6,7 @@ import 'package:almasah_dates/features/home/presentation/screens/landing_page.da
 import 'package:almasah_dates/features/items/presentation/screens/item_list_screen.dart';
 import 'package:almasah_dates/features/marchent/presentation/screens/merchant_list_screen.dart';
 import 'package:almasah_dates/features/purchaseOrder/presentation/screens/purchaseOrder_screen.dart';
+import 'package:almasah_dates/features/reports/presentation/screens/report_page.dart';
 import 'package:almasah_dates/features/saleOrder/presentation/screens/saleOrder_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -40,12 +41,21 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     pages.addAll([
       GeneratorPage(onMenuSelect: goToPage), // 0
-      const ItemListScreen(),                 // 1
-      LandingPage(onMenuSelect: goToPage),   // 2
-      const CustomerListScreen(),             // 3
-      const MerchantListScreen(),             // 4
-      const PurchaseOrderListScreen(),        // 5 (protected)
-      const SaleOrderListScreen(),            // 6 (protected)
+      const ItemListScreen(), // 1
+      LandingPage(onMenuSelect: goToPage), // 2
+      Center(
+        child: _showDialog(
+          options: ['Option 1', 'Option 2', 'Option 3'],
+          onSelected: (d) {
+            print('Selected: $d');
+          },
+        ),
+      ),
+      const MerchantListScreen(), // 4
+      const PurchaseOrderListScreen(), // 5 (protected)
+      const SaleOrderListScreen(), // 6
+      const ReportPage(), // 7 (protected)
+      const CustomerListScreen(), // 8
     ]);
   }
 
@@ -72,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
     int? targetPage = navToPage[tappedIndex];
 
     // If page is protected (PurchaseOrder = 5, SaleOrder = 6)
-    if (targetPage == 5) {
+    if (targetPage == 5 || targetPage == 7) {
       bool accessGranted = await showPasswordDialog(context);
       if (!accessGranted) return;
       pageIndex = targetPage!; // show the protected page
@@ -93,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void goToPage(int newPageIndex) async {
     // Protect PurchaseOrder and SaleOrder pages
-    if (newPageIndex == 5) {
+    if (newPageIndex == 5 || newPageIndex == 7) {
       bool accessGranted = await showPasswordDialog(context);
       if (!accessGranted) return;
     }
@@ -120,8 +130,9 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
           indicatorColor: Colors.brown.withOpacity(0.2),
-          labelTextStyle:
-              MaterialStateProperty.all(const TextStyle(fontSize: 13)),
+          labelTextStyle: MaterialStateProperty.all(
+            const TextStyle(fontSize: 13),
+          ),
         ),
         child: NavigationBar(
           selectedIndex: navIndex,
@@ -130,6 +141,40 @@ class _MyHomePageState extends State<MyHomePage> {
           elevation: 4,
           backgroundColor: Colors.white,
         ),
+      ),
+    );
+  }
+
+  Widget _showDialog({
+    required List<String> options,
+    required void Function(String) onSelected,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8), // space above button
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(blurRadius: 6, color: Colors.black26, offset: Offset(0, 3)),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: options
+            .map(
+              (opt) => InkWell(
+                onTap: () => onSelected(opt),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 16,
+                  ),
+                  child: Text(opt, style: const TextStyle(fontSize: 16)),
+                ),
+              ),
+            )
+            .toList(),
       ),
     );
   }

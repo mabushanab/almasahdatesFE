@@ -69,7 +69,8 @@ class ItemService {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({'name': item.name, 'type': item.type}),
+      body: jsonEncode(item.toJson()),
+      // body: jsonEncode({'name': item.name, 'type': item.type,'salePrice': item.salePrice}),
     );
   }
 
