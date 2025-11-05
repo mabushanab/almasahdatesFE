@@ -1,10 +1,11 @@
+import 'package:almasah_dates/features/customer/data/models/customer.dart';
 import 'package:almasah_dates/features/home/presentation/providers/home_provider.dart';
 import 'package:almasah_dates/features/home/presentation/screens/floating_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class LandingPage extends StatefulWidget {
-  final Function(int) onMenuSelect;
+  final Function(int,[Customer?]) onMenuSelect;
   const LandingPage({super.key, required this.onMenuSelect});
 
   @override
@@ -39,7 +40,7 @@ class _LandingPageState extends State<LandingPage> {
           ],
         ),
       ),
-      floatingActionButton: const DropUpFabMenu(),
+      floatingActionButton: DropUpFabMenu(onMenuSelect: widget.onMenuSelect),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
     );
   }

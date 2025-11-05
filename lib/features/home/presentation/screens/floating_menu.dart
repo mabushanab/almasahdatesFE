@@ -1,8 +1,11 @@
+import 'package:almasah_dates/features/customer/data/models/customer.dart';
 import 'package:almasah_dates/features/items/presentation/screens/ItemAddDialog.dart';
+import 'package:almasah_dates/features/saleOrder/presentation/screens/saleOrderAddDialog.dart';
 import 'package:flutter/material.dart';
 
 class DropUpFabMenu extends StatefulWidget {
-  const DropUpFabMenu({super.key});
+    final Function(int,[Customer?]) onMenuSelect;
+  const DropUpFabMenu({super.key,required this.onMenuSelect});
 
   @override
   State<DropUpFabMenu> createState() => _DropUpFabMenuState();
@@ -75,10 +78,10 @@ class _DropUpFabMenuState extends State<DropUpFabMenu> {
                               );
                             } else if (item['label'].toString().trim() ==
                                 'إضافة مورد') {
-                              // showDialog(
-                              //   context: context,
-                              //   builder: (_) => ItemAddDialog(),
-                              // );
+                              showDialog(
+                                context: context,
+                                builder: (_) => Saleorderadddialog(onMenuSelect: widget.onMenuSelect),
+                              );
                             }
                             _closeMenu();
                           },

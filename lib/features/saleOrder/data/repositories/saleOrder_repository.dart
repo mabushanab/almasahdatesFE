@@ -36,4 +36,8 @@ class SaleOrderRepository {
   Future<void> payRemain(String name) async {
     return await _service.payRemain(name);
   }
+
+  Future<List<SaleOrder>> fetchSaleOrdersForCustomer(String name) async {
+    return await _service.getSaleOrdersForCustomer(name);
+  }
 }

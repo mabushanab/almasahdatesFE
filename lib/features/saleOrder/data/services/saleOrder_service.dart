@@ -141,4 +141,26 @@ class SaleOrderService {
       print('Error downloading invoice: $e');
     }
   }
+
+  Future<List<SaleOrder>> getSaleOrdersForCustomer(String name) async {
+    String? token = await _authService.getToken();
+    print('name:$name');
+    final url = Uri.parse('$baseUrl/saleOrder/SOs')
+    .replace(queryParameters: {'customerName': name});
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      final List<SaleOrder> sOS = data.map((json) => SaleOrder.fromJson(json)).toList();
+      return data.map((json) => SaleOrder.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load saleOrders');
+    }
+  }
 }

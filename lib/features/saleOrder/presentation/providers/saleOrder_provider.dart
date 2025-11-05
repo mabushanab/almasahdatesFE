@@ -86,4 +86,14 @@ class SaleOrderProvider extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
+  Future<void> loadSaleOrdersForCustomer(String name) async {
+    isLoading = true;
+    notifyListeners();
+
+    await _repo.fetchSaleOrdersForCustomer(name);    
+
+    isLoading = false;
+    notifyListeners();
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:almasah_dates/features/auth/data/services/auth_service.dart';
 import 'package:almasah_dates/features/auth/presentation/widgets/password_widget.dart';
+import 'package:almasah_dates/features/customer/data/models/customer.dart';
 import 'package:almasah_dates/features/customer/presentation/screens/customer_list_screen.dart';
 import 'package:almasah_dates/features/home/presentation/screens/generator_page.dart';
 import 'package:almasah_dates/features/home/presentation/screens/landing_page.dart';
@@ -7,6 +8,8 @@ import 'package:almasah_dates/features/items/presentation/screens/item_list_scre
 import 'package:almasah_dates/features/marchent/presentation/screens/merchant_list_screen.dart';
 import 'package:almasah_dates/features/purchaseOrder/presentation/screens/purchaseOrder_screen.dart';
 import 'package:almasah_dates/features/reports/presentation/screens/report_page.dart';
+import 'package:almasah_dates/features/saleOrder/presentation/screens/saleOrderAddDialog.dart';
+import 'package:almasah_dates/features/saleOrder/presentation/screens/saleOrderPerCustomer_screen.dart';
 import 'package:almasah_dates/features/saleOrder/presentation/screens/saleOrder_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -20,10 +23,15 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _authService = AuthService();
-
+  late Customer? _selectedCustomer = Customer(
+    name: 'مول العلي',
+    type: 'type',
+    address: 'address',
+    mobileNumber: 'mobileNumber',
+  );
   int navIndex = 2; // NavigationBar selected index
   int pageIndex = 2; // Page being displayed
-  final List<Widget> pages = [];
+  List<Widget> pages = [];
 
   final List<NavigationDestination> navDestinations = const [
     NavigationDestination(icon: Icon(Icons.menu), label: 'Menu'),
@@ -56,6 +64,8 @@ class _MyHomePageState extends State<MyHomePage> {
       const SaleOrderListScreen(), // 6
       const ReportPage(), // 7 (protected)
       const CustomerListScreen(), // 8
+      Saleorderadddialog(onMenuSelect: goToPage), // 9
+      SaleOrderPerCustomer(selectedCustomer: _selectedCustomer!),
     ]);
   }
 
@@ -71,16 +81,13 @@ class _MyHomePageState extends State<MyHomePage> {
       _scaffoldKey.currentState?.openDrawer();
       return;
     }
-
     // Logout
     if (tappedIndex == 4) {
       _logout();
       return;
     }
-
     // Default pageIndex mapping
     int? targetPage = navToPage[tappedIndex];
-
     // If page is protected (PurchaseOrder = 5, SaleOrder = 6)
     if (targetPage == 5 || targetPage == 7) {
       bool accessGranted = await showPasswordDialog(context);
@@ -101,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void goToPage(int newPageIndex) async {
+  void goToPage(int newPageIndex, [Customer? customer]) async {
     // Protect PurchaseOrder and SaleOrder pages
     if (newPageIndex == 5 || newPageIndex == 7) {
       bool accessGranted = await showPasswordDialog(context);
@@ -109,6 +116,9 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     setState(() {
+      pages[10] = SaleOrderPerCustomer(selectedCustomer: customer!);
+      _selectedCustomer = customer;
+      print('DDD${_selectedCustomer!.name}');
       pageIndex = newPageIndex;
       // Update navIndex if page is linked to NavigationBar
       int navMatch = navToPage.indexOf(newPageIndex);
