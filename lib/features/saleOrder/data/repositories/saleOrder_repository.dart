@@ -1,5 +1,6 @@
 // repositories/item_repository.dart
 
+import 'package:almasah_dates/features/saleOrder/data/models/saleOrderPerCustomer.dart';
 import 'package:almasah_dates/features/saleOrder/data/services/saleOrder_service.dart';
 
 import '../models/saleOrder.dart';
@@ -37,7 +38,7 @@ class SaleOrderRepository {
     return await _service.payRemain(name);
   }
 
-  Future<List<SaleOrder>> fetchSaleOrdersForCustomer(String name) async {
+  Future<SaleOrderPerCustomer> fetchSaleOrdersForCustomer(String name) async {
     return await _service.getSaleOrdersForCustomer(name);
   }
 }

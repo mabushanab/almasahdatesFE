@@ -31,6 +31,7 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
   void initState() {
     super.initState();
     Future.microtask(() {
+      // Future.delayed(const Duration(milliseconds: 300));
       context.read<ItemProvider>().loadItems();
       context.read<CustomerProvider>().loadCustomers();
       context.read<SaleOrderProvider>().loadSaleOrders();
@@ -367,7 +368,7 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sale Orders'),
+        title: const Text('المبيعات'),
         actions: [
           IconButton(onPressed: _refresh, icon: const Icon(Icons.refresh)),
           IconButton(
@@ -392,8 +393,24 @@ class _SaleOrderListScreenState extends State<SaleOrderListScreen> {
               child: ListTile(
                 onTap: () => _showSaleOrderDialog(so.products, so.sOId ?? ''),
                 title: Text(so.customerName),
-                subtitle: Text(
-                  '${so.date} •  Total: ${so.totalPrice} • Remain: ${so.remainAmount}',
+                subtitle: Row(
+                  children: [
+                    Text('${so.date}    '),
+                    Row(
+                      children: [
+                        Text('Total: ${so.totalPrice} '),
+                        Icon(
+                          Icons.payments_rounded,
+                          color: Color(0xFF388E3C),
+                        ),
+                        Text('    ${so.remainAmount} '),
+                        Icon(
+                          Icons.account_balance_wallet_rounded,
+                          color: Color(0xFFF57C00),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
                 trailing: IconButton(
                   icon: const Icon(

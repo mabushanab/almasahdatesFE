@@ -4,7 +4,7 @@ import 'package:almasah_dates/features/items/data/models/item.dart';
 import 'package:almasah_dates/features/items/presentation/providers/item_provider.dart';
 import 'package:almasah_dates/features/saleOrder/data/models/product.dart';
 import 'package:almasah_dates/features/saleOrder/data/models/saleOrder.dart';
-import 'package:almasah_dates/features/saleOrder/presentation/providers/saleOrder_provider.dart';
+import 'package:almasah_dates/features/saleOrder/presentation/providers/saleOrder_providerPerCustomer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +33,9 @@ class _SaleOrderPerCustomer extends State<SaleOrderPerCustomer> {
     Future.microtask(() {
       context.read<ItemProvider>().loadItems();
       context.read<CustomerProvider>().loadCustomers();
-      context.read<SaleOrderProvider>().loadSaleOrders();
+      context.read<SaleOrderProviderPerCustomer>().loadSaleOrdersForCustomer(
+        widget.selectedCustomer.name,
+      );
     });
   }
 
@@ -41,23 +43,24 @@ class _SaleOrderPerCustomer extends State<SaleOrderPerCustomer> {
       _formKey.currentState!.validate() && products.isNotEmpty;
   bool _validateItem() => _formKey1.currentState!.validate();
 
-  Future<void> _refresh() async =>
-      await context.read<SaleOrderProvider>().loadSaleOrdersForCustomer(widget.selectedCustomer.name);
+  Future<void> _refresh() async => await context
+      .read<SaleOrderProviderPerCustomer>()
+      .loadSaleOrdersForCustomer(widget.selectedCustomer.name);
 
   Future<String> _getMaxProductPrice(String name) async =>
-      context.read<SaleOrderProvider>().getMaxProductPrice(name);
+      context.read<SaleOrderProviderPerCustomer>().getMaxProductPrice(name);
 
   Future<String> _getProductPrice(String name) async =>
-      context.read<SaleOrderProvider>().getProductPrice(name);
+      context.read<SaleOrderProviderPerCustomer>().getProductPrice(name);
 
   Future<void> _addSaleOrder(SaleOrder order) async =>
-      context.read<SaleOrderProvider>().addSaleOrder(order);
+      context.read<SaleOrderProviderPerCustomer>().addSaleOrder(order);
 
   Future<void> _getInvoice(String name) async =>
-      context.read<SaleOrderProvider>().getInvoice(name);
+      context.read<SaleOrderProviderPerCustomer>().getInvoice(name);
 
   Future<void> _payRemain(String sOId) async =>
-      context.read<SaleOrderProvider>().payRemain(sOId);
+      context.read<SaleOrderProviderPerCustomer>().payRemain(sOId);
   // ==============================
   // 💬 Add Sale Order Dialog
   // ==============================
@@ -345,13 +348,12 @@ class _SaleOrderPerCustomer extends State<SaleOrderPerCustomer> {
   // ==============================
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<SaleOrderProvider>();
-    // final customers = context.watch<CustomerProvider>();
+    final provider = context.watch<SaleOrderProviderPerCustomer>();
     final items = context.watch<ItemProvider>();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sale Orders'),
+        title: Text('المبيعات'),
         actions: [
           IconButton(onPressed: _refresh, icon: const Icon(Icons.refresh)),
           IconButton(
@@ -376,8 +378,21 @@ class _SaleOrderPerCustomer extends State<SaleOrderPerCustomer> {
               child: ListTile(
                 onTap: () => _showSaleOrderDialog(so.products, so.sOId ?? ''),
                 title: Text(so.customerName),
-                subtitle: Text(
-                  '${so.date} •  Total: ${so.totalPrice} • Remain: ${so.remainAmount}',
+                subtitle: Row(
+                  children: [
+                    Text('${so.date}    '),
+                    Row(
+                      children: [
+                        Text('Total: ${so.totalPrice} '),
+                        Icon(Icons.payments_rounded, color: Color(0xFF388E3C)),
+                        Text('    ${so.remainAmount} '),
+                        Icon(
+                          Icons.account_balance_wallet_rounded,
+                          color: Color(0xFFF57C00),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
                 trailing: IconButton(
                   icon: const Icon(

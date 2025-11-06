@@ -49,10 +49,7 @@ class _Saleorderadddialog extends State<Saleorderadddialog> {
           icon: const Icon(Icons.keyboard_double_arrow_left_outlined),
           label: const Text('Go'),
           onPressed: () {
-            // CustomerProvider cu
-
-            widget.onMenuSelect(10, selectedCustomer);
-            print(selectedCustomer!.name);
+            widget.onMenuSelect(11, selectedCustomer);
             Future.delayed(const Duration(milliseconds: 100), () {
               Navigator.pop(context);
             });

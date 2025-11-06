@@ -38,7 +38,8 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
     });
   }
 
-  bool _validatePO() => _formKey.currentState!.validate() && goodsList.isNotEmpty;
+  bool _validatePO() =>
+      _formKey.currentState!.validate() && goodsList.isNotEmpty;
   bool _validateGoods() => _formKey1.currentState!.validate();
 
   Future<void> _refresh() async =>
@@ -53,7 +54,8 @@ class _PurchaseOrderListScreenState extends State<PurchaseOrderListScreen> {
   Future<void> _getInvoice(String pOId) async =>
       context.read<PurchaseOrderProvider>().getInvoice(pOId);
 
-Future<void> _payRemain(String pOId) async => context.read<PurchaseOrderProvider>().payRemain(pOId);
+  Future<void> _payRemain(String pOId) async =>
+      context.read<PurchaseOrderProvider>().payRemain(pOId);
 
   // ==============================
   // 💬 Add Purchase Order Dialog
@@ -74,21 +76,24 @@ Future<void> _payRemain(String pOId) async => context.read<PurchaseOrderProvider
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
           title: const Text('Add Purchase Order'),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           content: SingleChildScrollView(
             child: Form(
               key: _formKey,
               child: Column(
                 children: [
                   DropdownButtonFormField<Merchant>(
-                    decoration: const InputDecoration(labelText: 'Merchant Name'),
+                    decoration: const InputDecoration(
+                      labelText: 'Merchant Name',
+                    ),
                     value: selectedMerchant,
                     items: merchantProvider.merchants
-                        .map((m) => DropdownMenuItem(
-                              value: m,
-                              child: Text(m.name),
-                            ))
+                        .map(
+                          (m) =>
+                              DropdownMenuItem(value: m, child: Text(m.name)),
+                        )
                         .toList(),
                     onChanged: (m) => setState(() => selectedMerchant = m),
                     validator: (v) => v == null ? "Merchant required" : null,
@@ -127,8 +132,9 @@ Future<void> _payRemain(String pOId) async => context.read<PurchaseOrderProvider
                       margin: const EdgeInsets.symmetric(vertical: 4),
                       child: ListTile(
                         title: Text(g.itemName),
-                        subtitle:
-                            Text('Price: ${g.priceForGrams}, Qty: ${g.weightInGrams}g'),
+                        subtitle: Text(
+                          'Price: ${g.priceForGrams}, Qty: ${g.weightInGrams}g',
+                        ),
                         trailing: IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
@@ -156,8 +162,7 @@ Future<void> _payRemain(String pOId) async => context.read<PurchaseOrderProvider
                     PurchaseOrder(
                       merchantName: selectedMerchant!.name,
                       totalPrice: double.parse(_totalPrice.text),
-                      remainAmount:
-                          double.tryParse(_remainAmount.text) ?? 0.0,
+                      remainAmount: double.tryParse(_remainAmount.text) ?? 0.0,
                       goods: goodsList,
                     ),
                   );
@@ -192,8 +197,9 @@ Future<void> _payRemain(String pOId) async => context.read<PurchaseOrderProvider
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
           title: const Text('Add Goods'),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           content: Form(
             key: _formKey1,
             child: Column(
@@ -203,10 +209,9 @@ Future<void> _payRemain(String pOId) async => context.read<PurchaseOrderProvider
                   decoration: const InputDecoration(labelText: 'Item'),
                   value: selectedItem,
                   items: itemProvider.items
-                      .map((i) => DropdownMenuItem(
-                            value: i,
-                            child: Text(i.name),
-                          ))
+                      .map(
+                        (i) => DropdownMenuItem(value: i, child: Text(i.name)),
+                      )
                       .toList(),
                   onChanged: (i) async {
                     setState(() => selectedItem = i);
@@ -219,25 +224,29 @@ Future<void> _payRemain(String pOId) async => context.read<PurchaseOrderProvider
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _priceForGram,
-                  decoration: const InputDecoration(labelText: 'Price per gram'),
+                  decoration: const InputDecoration(
+                    labelText: 'Price per gram',
+                  ),
                   keyboardType: TextInputType.number,
                   onChanged: (v) => g.priceForGrams = double.tryParse(v) ?? 0.0,
                   validator: (v) => (v == null || v.isEmpty)
                       ? "Price required"
                       : double.tryParse(v) == null
-                          ? "Invalid number"
-                          : null,
+                      ? "Invalid number"
+                      : null,
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'Weight (grams)'),
+                  decoration: const InputDecoration(
+                    labelText: 'Weight (grams)',
+                  ),
                   keyboardType: TextInputType.number,
                   onChanged: (v) => g.weightInGrams = double.tryParse(v) ?? 0.0,
                   validator: (v) => (v == null || v.isEmpty)
                       ? "Weight required"
                       : double.tryParse(v) == null
-                          ? "Invalid number"
-                          : null,
+                      ? "Invalid number"
+                      : null,
                 ),
               ],
             ),
@@ -270,7 +279,7 @@ Future<void> _payRemain(String pOId) async => context.read<PurchaseOrderProvider
   // ==============================
   // 🧾 Show Purchase Order Details
   // ==============================
-  Future<void> _showPurchaseOrderDialog(List<Goods> goods,String pOId) async {
+  Future<void> _showPurchaseOrderDialog(List<Goods> goods, String pOId) async {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -287,17 +296,19 @@ Future<void> _payRemain(String pOId) async => context.read<PurchaseOrderProvider
                 ],
               ),
               const Divider(),
-              ...goods.map((g) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(g.itemName),
-                        Text('${g.priceForGrams}'),
-                        Text('${g.weightInGrams}'),
-                      ],
-                    ),
-                  )),
+              ...goods.map(
+                (g) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(g.itemName),
+                      Text('${g.priceForGrams}'),
+                      Text('${g.weightInGrams}'),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -305,7 +316,8 @@ Future<void> _payRemain(String pOId) async => context.read<PurchaseOrderProvider
           TextButton(
             onPressed: () {
               _payRemain(pOId);
-              Navigator.pop(context);},
+              Navigator.pop(context);
+            },
             child: const Text('Pay Remain'),
           ),
           TextButton(
@@ -332,7 +344,8 @@ Future<void> _payRemain(String pOId) async => context.read<PurchaseOrderProvider
         actions: [
           IconButton(onPressed: _refresh, icon: const Icon(Icons.refresh)),
           IconButton(
-            onPressed: () => _showAddPurchaseOrderDialog(context, merchants, items),
+            onPressed: () =>
+                _showAddPurchaseOrderDialog(context, merchants, items),
             icon: const Icon(Icons.add),
           ),
         ],
@@ -351,11 +364,29 @@ Future<void> _payRemain(String pOId) async => context.read<PurchaseOrderProvider
                 borderRadius: BorderRadius.circular(8),
               ),
               child: ListTile(
-                onTap: () => _showPurchaseOrderDialog(po.goods,po.pOId ?? ''),
+                onTap: () => _showPurchaseOrderDialog(po.goods, po.pOId ?? ''),
                 title: Text(po.merchantName),
-                subtitle: Text('${po.date} •  Total: ${po.totalPrice} • Remain: ${po.remainAmount}'),
+                subtitle: Row(
+                  children: [
+                    Text('${po.date}    '),
+                    Row(
+                      children: [
+                        Text('Total: ${po.totalPrice} '),
+                        Icon(Icons.payments_rounded, color: Color(0xFF388E3C)),
+                        Text('    ${po.remainAmount} '),
+                        Icon(
+                          Icons.account_balance_wallet_rounded,
+                          color: Color(0xFFF57C00),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
                 trailing: IconButton(
-                  icon: const Icon(Icons.picture_as_pdf, color: Colors.redAccent),
+                  icon: const Icon(
+                    Icons.picture_as_pdf,
+                    color: Colors.redAccent,
+                  ),
                   onPressed: () => _getInvoice(po.pOId!),
                 ),
               ),

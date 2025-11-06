@@ -34,7 +34,10 @@ class _LandingPageState extends State<LandingPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _buildSummaryCards(provider, size),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: _buildSummaryCards(provider, size),
+              ),
             const SizedBox(height: 40),
             _buildMenuGrid(context, size),
           ],
@@ -51,7 +54,7 @@ class _LandingPageState extends State<LandingPage> {
 
     return Wrap(
       spacing: 12,
-      runSpacing: 12,
+      runSpacing: 12,      
       alignment: WrapAlignment.center,
       children: [
         _summaryCard(

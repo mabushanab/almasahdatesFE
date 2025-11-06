@@ -5,6 +5,7 @@ import 'package:almasah_dates/features/items/presentation/providers/item_provide
 import 'package:almasah_dates/features/marchent/presentation/providers/merchant_provider.dart';
 import 'package:almasah_dates/features/purchaseOrder/presentation/providers/purchaseOrder_provider.dart';
 import 'package:almasah_dates/features/saleOrder/presentation/providers/saleOrder_provider.dart';
+import 'package:almasah_dates/features/saleOrder/presentation/providers/saleOrder_providerPerCustomer.dart';
 import 'package:almasah_dates/routes/routes.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CustomerProvider()),
         ChangeNotifierProvider(create: (_) => PurchaseOrderProvider()),
         ChangeNotifierProvider(create: (_) => SaleOrderProvider()),
+        ChangeNotifierProvider(create: (_) => SaleOrderProviderPerCustomer()),
         ChangeNotifierProvider(create: (_) => HomeProvider()),
       ],
       child: MaterialApp(

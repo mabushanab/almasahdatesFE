@@ -8,6 +8,7 @@ import 'package:almasah_dates/features/items/presentation/screens/item_list_scre
 import 'package:almasah_dates/features/marchent/presentation/screens/merchant_list_screen.dart';
 import 'package:almasah_dates/features/purchaseOrder/presentation/screens/purchaseOrder_screen.dart';
 import 'package:almasah_dates/features/reports/presentation/screens/report_page.dart';
+import 'package:almasah_dates/features/saleOrder/presentation/screens/Customer_screen.dart';
 import 'package:almasah_dates/features/saleOrder/presentation/screens/saleOrderAddDialog.dart';
 import 'package:almasah_dates/features/saleOrder/presentation/screens/saleOrderPerCustomer_screen.dart';
 import 'package:almasah_dates/features/saleOrder/presentation/screens/saleOrder_screen.dart';
@@ -65,7 +66,8 @@ class _MyHomePageState extends State<MyHomePage> {
       const ReportPage(), // 7 (protected)
       const CustomerListScreen(), // 8
       Saleorderadddialog(onMenuSelect: goToPage), // 9
-      SaleOrderPerCustomer(selectedCustomer: _selectedCustomer!),
+      SaleOrderPerCustomer(selectedCustomer: _selectedCustomer!), // 10
+      CustomerScreen(onMenuSelect: goToPage, selectedCustomer: _selectedCustomer!), // 11
     ]);
   }
 
@@ -116,9 +118,11 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     setState(() {
-      pages[10] = SaleOrderPerCustomer(selectedCustomer: customer!);
-      _selectedCustomer = customer;
-      print('DDD${_selectedCustomer!.name}');
+      if (customer != null) {        
+        pages[10] = SaleOrderPerCustomer(selectedCustomer: customer);
+        pages[11] = CustomerScreen(onMenuSelect: goToPage, selectedCustomer: customer);
+        _selectedCustomer = customer;
+      }
       pageIndex = newPageIndex;
       // Update navIndex if page is linked to NavigationBar
       int navMatch = navToPage.indexOf(newPageIndex);

@@ -18,14 +18,14 @@ class MyTheme {
     ),
     scaffoldBackgroundColor: Colors.grey[100],
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFFEED5B7),
-      foregroundColor: Colors.black,
+      backgroundColor: Color(0xFF009688),
+      foregroundColor: Color(0xFFDDCAA8),
       centerTitle: true,
       elevation: 2,
       titleTextStyle: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 20,
-        color: Colors.black,
+        color: Color(0xFFDDCAA8),
       ),
     ),
     drawerTheme: DrawerThemeData(

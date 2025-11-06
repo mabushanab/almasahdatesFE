@@ -13,6 +13,7 @@ class SaleOrderProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
+    // Future.delayed(const Duration(milliseconds: 2221300));
     saleOrders = await _repo.getSaleOrders();
 
     isLoading = false;
@@ -87,13 +88,14 @@ class SaleOrderProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loadSaleOrdersForCustomer(String name) async {
-    isLoading = true;
-    notifyListeners();
+  // Future<void> loadSaleOrdersForCustomer(String name) async {
+  //   isLoading = true;
+  //   notifyListeners();
+    
+  //   saleOrders = await _repo.fetchSaleOrdersForCustomer(name);    
+    
 
-    await _repo.fetchSaleOrdersForCustomer(name);    
-
-    isLoading = false;
-    notifyListeners();
-  }
+  //   isLoading = false;
+  //   notifyListeners();
+  // }
 }

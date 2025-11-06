@@ -22,7 +22,7 @@ class _DropUpFabMenuState extends State<DropUpFabMenu> {
 
   final List<Map<String, dynamic>> options = [
     {'label': 'إضافة صنف', 'icon': Icons.add_box},
-    {'label': 'إضافة مورد', 'icon': Icons.person_add},
+    {'label': 'إختيار زبون', 'icon': Icons.person_add},
     {'label': 'تقرير جديد', 'icon': Icons.receipt_long},
   ];
 
@@ -77,7 +77,7 @@ class _DropUpFabMenuState extends State<DropUpFabMenu> {
                                 builder: (_) => ItemAddDialog(),
                               );
                             } else if (item['label'].toString().trim() ==
-                                'إضافة مورد') {
+                                'إختيار زبون') {
                               showDialog(
                                 context: context,
                                 builder: (_) => Saleorderadddialog(onMenuSelect: widget.onMenuSelect),
